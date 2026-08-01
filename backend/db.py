@@ -1,7 +1,7 @@
 import os
-import pymongo
 from datetime import datetime, timedelta
 from pathlib import Path
+from supabase import create_client, Client
 
 # Load environment variables from .env file
 def load_env():
@@ -20,27 +20,254 @@ def load_env():
 
 load_env()
 
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017")
-DB_NAME = os.environ.get("DB_NAME", "sjc_sports_day")
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
-# Override DNS nameservers to avoid local DNS timeout on Atlas SRV records
-if MONGO_URI.startswith("mongodb+srv"):
-    try:
-        import dns.resolver
-        dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
-        dns.resolver.default_resolver.nameservers = ['8.8.8.8', '1.1.1.1']
-    except Exception:
-        pass
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise ValueError("SUPABASE_URL and SUPABASE_KEY must be configured in environment variables or .env file.")
 
-client = pymongo.MongoClient(MONGO_URI)
-db = client[DB_NAME]
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Collections
-departments_col = db["departments"]
-events_col = db["events"]
-issued_events_col = db["issued_events"]
-registrations_col = db["registrations"]
-settings_col = db["settings"]
+class SupabaseCollection:
+    def __init__(self, table_name):
+        self.table_name = table_name
+
+    def _map_doc(self, doc):
+        if not doc:
+            return None
+        d = dict(doc)
+        if self.table_name == "system_settings":
+            val = d.pop("value", {})
+            if isinstance(val, dict):
+                d.update(val)
+        
+        # Always map standard identifiers to _id for backend compatibility
+        if "id" in d:
+            d["_id"] = d["id"]
+        elif "department_id" in d:
+            d["_id"] = d["department_id"]
+        return d
+
+    def find_one(self, filter=None, *args, **kwargs):
+        filter = filter or {}
+        filter = dict(filter)
+        if "_id" in filter:
+            filter["id"] = filter.pop("_id")
+
+        query = supabase.table(self.table_name).select("*")
+        for k, v in filter.items():
+            if isinstance(v, dict):
+                for op, val in v.items():
+                    if op == "$in":
+                        query = query.in_(k, val)
+                    elif op == "$ne":
+                        query = query.neq(k, val)
+            else:
+                query = query.eq(k, v)
+
+        res = query.execute()
+        if res.data and len(res.data) > 0:
+            return self._map_doc(res.data[0])
+        return None
+
+    def find(self, filter=None, *args, **kwargs):
+        filter = filter or {}
+        filter = dict(filter)
+        if "_id" in filter:
+            filter["id"] = filter.pop("_id")
+
+        query = supabase.table(self.table_name).select("*")
+        for k, v in filter.items():
+            if isinstance(v, dict):
+                for op, val in v.items():
+                    if op == "$in":
+                        query = query.in_(k, val)
+                    elif op == "$ne":
+                        query = query.neq(k, val)
+            else:
+                query = query.eq(k, v)
+
+        res = query.execute()
+        return [self._map_doc(d) for d in (res.data or [])]
+
+    def insert_one(self, doc):
+        doc = dict(doc)
+        if "_id" in doc:
+            doc["id"] = doc.pop("_id")
+
+        if self.table_name == "system_settings":
+            id_val = doc.pop("id")
+            payload = {"id": id_val, "value": doc}
+        else:
+            payload = doc
+
+        res = supabase.table(self.table_name).insert(payload).execute()
+        
+        class InsertOneResult:
+            def __init__(self, inserted_id):
+                self.inserted_id = inserted_id
+        return InsertOneResult(payload.get("id"))
+
+    def update_one(self, filter, update, upsert=False, *args, **kwargs):
+        filter = dict(filter)
+        if "_id" in filter:
+            filter["id"] = filter.pop("_id")
+
+        set_data = update.get("$set", {})
+        id_val = filter.get("id") or filter.get("department_id")
+
+        existing = self.find_one(filter)
+
+        if self.table_name == "system_settings":
+            rec = existing or {"id": id_val}
+            for k, v in set_data.items():
+                rec[k] = v
+            
+            val_payload = {}
+            for k, v in rec.items():
+                if k not in ["id", "_id"]:
+                    val_payload[k] = v
+            
+            payload = {"id": id_val, "value": val_payload}
+            if existing:
+                res = supabase.table(self.table_name).update(payload).eq("id", id_val).execute()
+            elif upsert:
+                res = supabase.table(self.table_name).insert(payload).execute()
+        else:
+            has_nested = any("." in k for k in set_data.keys())
+            if has_nested or existing:
+                rec = existing or {}
+                for k, v in set_data.items():
+                    if "." in k:
+                        parts = k.split(".")
+                        parent_key = parts[0]
+                        child_key = parts[1]
+                        if parent_key not in rec or not isinstance(rec[parent_key], dict):
+                            rec[parent_key] = {}
+                        rec[parent_key][child_key] = v
+                    else:
+                        rec[k] = v
+                
+                payload = {}
+                for k, v in rec.items():
+                    if k == "_id":
+                        pass
+                    elif k == "department_id" and self.table_name == "issued_events":
+                        payload["department_id"] = v
+                    else:
+                        payload[k] = v
+                
+                if self.table_name == "issued_events":
+                    res = supabase.table(self.table_name).update(payload).eq("department_id", id_val).execute()
+                else:
+                    res = supabase.table(self.table_name).update(payload).eq("id", id_val).execute()
+            else:
+                if upsert:
+                    payload = {}
+                    for k, v in filter.items():
+                        if k == "department_id" and self.table_name == "issued_events":
+                            payload["department_id"] = v
+                        elif k != "_id":
+                            payload[k] = v
+                    for k, v in set_data.items():
+                        payload[k] = v
+                    res = supabase.table(self.table_name).insert(payload).execute()
+
+        class UpdateResult:
+            def __init__(self, matched_count, modified_count):
+                self.matched_count = matched_count
+                self.modified_count = modified_count
+        return UpdateResult(1 if existing else 0, 1)
+
+    def delete_one(self, filter, *args, **kwargs):
+        filter = dict(filter)
+        if "_id" in filter:
+            filter["id"] = filter.pop("_id")
+
+        query = supabase.table(self.table_name).delete()
+        for k, v in filter.items():
+            query = query.eq(k, v)
+        res = query.execute()
+        
+        class DeleteResult:
+            def __init__(self, deleted_count):
+                self.deleted_count = deleted_count
+        return DeleteResult(len(res.data or []))
+
+    def delete_many(self, filter, *args, **kwargs):
+        filter = dict(filter)
+        if "_id" in filter:
+            filter["id"] = filter.pop("_id")
+
+        query = supabase.table(self.table_name).delete()
+        for k, v in filter.items():
+            query = query.eq(k, v)
+        res = query.execute()
+        
+        class DeleteResult:
+            def __init__(self, deleted_count):
+                self.deleted_count = deleted_count
+        return DeleteResult(len(res.data or []))
+
+    def count_documents(self, filter=None, *args, **kwargs):
+        filter = filter or {}
+        filter = dict(filter)
+        if "_id" in filter:
+            filter["id"] = filter.pop("_id")
+
+        query = supabase.table(self.table_name).select("*")
+        for k, v in filter.items():
+            if isinstance(v, dict):
+                for op, val in v.items():
+                    if op == "$in":
+                        query = query.in_(k, val)
+                    elif op == "$ne":
+                        query = query.neq(k, val)
+            else:
+                query = query.eq(k, v)
+
+        res = query.execute()
+        return len(res.data or [])
+
+    def update_many(self, filter, update, *args, **kwargs):
+        records = self.find(filter)
+        pull_data = update.get("$pull", {})
+        
+        for rec in records:
+            updated = False
+            for k, val in pull_data.items():
+                if k in rec and isinstance(rec[k], list):
+                    if val in rec[k]:
+                        rec[k] = [x for x in rec[k] if x != val]
+                        updated = True
+            
+            if updated:
+                payload = {}
+                for key, v in rec.items():
+                    if key == "_id":
+                        pass
+                    elif key == "department_id" and self.table_name == "issued_events":
+                        payload["department_id"] = v
+                    else:
+                        payload[key] = v
+                
+                if self.table_name == "issued_events":
+                    res = supabase.table(self.table_name).update(payload).eq("department_id", rec["department_id"]).execute()
+                else:
+                    res = supabase.table(self.table_name).update(payload).eq("id", rec["id"]).execute()
+
+        class UpdateResult:
+            def __init__(self, matched_count, modified_count):
+                self.matched_count = matched_count
+                self.modified_count = modified_count
+        return UpdateResult(len(records), len(records))
+
+# Mock Collections representing Supabase tables
+departments_col = SupabaseCollection("departments")
+events_col = SupabaseCollection("events")
+issued_events_col = SupabaseCollection("issued_events")
+registrations_col = SupabaseCollection("registrations")
+settings_col = SupabaseCollection("system_settings")
 
 DEFAULT_RULES = [
     "Only Three Athletes from a team can participate in an event except 800 Mts. Race, 1500Mts. Race, 5000 Mts. Race, 10,000 Mts. Race & 20 km walk.",
@@ -50,6 +277,19 @@ DEFAULT_RULES = [
 ]
 
 def seed_database():
+    try:
+        # Check if we can reach the settings table
+        # If it fails, database public schema table doesn't exist yet
+        settings_col.find_one({"_id": "rules"})
+    except Exception as e:
+        print("\n" + "="*80)
+        print(" [WARNING] DATABASE NOT YET READY")
+        print(" Supabase connection was made, but target database tables are missing.")
+        print(" Please paste and execute the SQL Table schemas in your Supabase Dashboard SQL Editor!")
+        print(" Details:", str(e))
+        print("="*80 + "\n")
+        return
+
     # 1. Seed Settings (Rules and Deadlines)
     if not settings_col.find_one({"_id": "rules"}):
         settings_col.insert_one({
@@ -59,7 +299,6 @@ def seed_database():
         print("Seeded default rules.")
 
     if not settings_col.find_one({"_id": "deadlines"}):
-        # Default deadline: 7 days from now
         default_dl = (datetime.utcnow() + timedelta(days=7)).isoformat()
         settings_col.insert_one({
             "_id": "deadlines",
@@ -115,7 +354,6 @@ def seed_database():
         if not db_ev:
             events_col.insert_one(ev)
         else:
-            # Ensure new fields are present on existing events
             update_fields = {}
             if "max_members" not in db_ev:
                 update_fields["max_members"] = ev["max_members"]
@@ -192,9 +430,7 @@ def seed_database():
                 "name": dept["name"],
                 "shift": dept["shift"],
                 "password": "",
-                "is_first_login": True,
-                "vice_secretary": None,
-                "student_secretary": None
+                "secretaries": {}
             })
             print(f"Seeded department: {dept['name']}")
         
@@ -212,11 +448,15 @@ def seed_database():
     print("Seeding finished successfully.")
 
 def get_active_year() -> str:
-    doc = settings_col.find_one({"_id": "active_year"})
-    if not doc:
-        settings_col.insert_one({"_id": "active_year", "year": "2026"})
+    try:
+        doc = settings_col.find_one({"_id": "active_year"})
+        if not doc:
+            settings_col.insert_one({"_id": "active_year", "year": "2026"})
+            return "2026"
+        return doc.get("year", "2026")
+    except Exception:
+        # Fallback value if database schema is not created yet
         return "2026"
-    return doc.get("year", "2026")
 
 if __name__ == "__main__":
     seed_database()
