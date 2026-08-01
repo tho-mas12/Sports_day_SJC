@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Login from "./components/Login";
-import sportsLogo from "./assets/sports_logo.png";
+import sportsLogo from "./assets/sjc_logo.png";
 import DepartmentDashboard from "./components/DepartmentDashboard";
 import RegisterParticipant from "./components/RegisterParticipant";
 import ViewParticipant from "./components/ViewParticipant";
@@ -184,7 +184,7 @@ function App() {
       {/* Left side persistent Navigation Bar */}
       <nav className="sidebar">
         <div className="sidebar-brand">
-          <img src={sportsLogo} alt="SJC Sports Logo" style={{ width: "32px", height: "32px", objectFit: "contain", marginRight: "6px" }} />
+          <img src={sportsLogo} alt="SJC Sports Logo" style={{ width: "32px", height: "32px", objectFit: "contain", marginRight: "8px" }} />
           <span>SJC_SPORT'S_DAY</span>
         </div>
 

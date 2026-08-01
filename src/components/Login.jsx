@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { KeyRound, ShieldAlert, School, CalendarDays } from "lucide-react";
-import sjcLogo from "../assets/sjc_logo.jpg";
+import sjcLogo from "../assets/sjc_logo.png";
 
 function Login({ onLogin }) {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -95,7 +95,7 @@ function Login({ onLogin }) {
             display: "inline-flex", 
             marginBottom: "16px" 
           }}>
-            <img src={sjcLogo} alt="SJC Logo" style={{ width: "80px", height: "80px", borderRadius: "50%", border: "3px solid var(--color-primary-light)", objectFit: "cover" }} />
+            <img src={sjcLogo} alt="SJC Logo" style={{ width: "100px", height: "100px", objectFit: "contain" }} />
           </div>
           <h1 style={{ 
             fontSize: "24px", 
