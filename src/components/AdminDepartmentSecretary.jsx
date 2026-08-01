@@ -16,7 +16,7 @@ function AdminDepartmentSecretary() {
 
   const loadSecretaries = () => {
     setLoading(true);
-    fetch("http://localhost:8000/api/reports/secretaries")
+    fetch("/api/reports/secretaries")
       .then(res => {
         if (!res.ok) throw new Error("Failed to load secretaries");
         return res.json();

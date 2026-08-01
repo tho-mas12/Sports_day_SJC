@@ -44,10 +44,10 @@ function RegisterParticipant({ user, onNavigate }) {
   const loadData = async () => {
     try {
       setLoading(true);
-      const dashRes = await fetch(`http://localhost:8000/api/department/${user.dept_id}/dashboard`);
+      const dashRes = await fetch(`/api/department/${user.dept_id}/dashboard`);
       const dashData = await dashRes.json();
       
-      const regsRes = await fetch(`http://localhost:8000/api/registration/${user.dept_id}`);
+      const regsRes = await fetch(`/api/registration/${user.dept_id}`);
       const regsData = await regsRes.json();
 
       if (dashRes.ok && regsRes.ok) {
@@ -153,7 +153,7 @@ function RegisterParticipant({ user, onNavigate }) {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/registration/register", {
+      const res = await fetch("/api/registration/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -225,7 +225,7 @@ function RegisterParticipant({ user, onNavigate }) {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/registration/register", {
+      const res = await fetch("/api/registration/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

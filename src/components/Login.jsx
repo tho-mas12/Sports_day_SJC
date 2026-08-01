@@ -13,7 +13,7 @@ function Login({ onLogin }) {
 
   // Fetch departments list for the dropdown
   useEffect(() => {
-    fetch("http://localhost:8000/api/admin/departments")
+    fetch("/api/admin/departments")
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -44,7 +44,7 @@ function Login({ onLogin }) {
     try {
       if (isAdmin) {
         // Admin login
-        const res = await fetch("http://localhost:8000/api/auth/login/admin", {
+        const res = await fetch("/api/auth/login/admin", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ admin_id: adminId, password })
@@ -62,7 +62,7 @@ function Login({ onLogin }) {
           setLoading(false);
           return;
         }
-        const res = await fetch("http://localhost:8000/api/auth/login/department", {
+        const res = await fetch("/api/auth/login/department", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ dept_id: selectedDept, password })

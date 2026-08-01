@@ -35,10 +35,10 @@ function AdminEventsDepartments() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const evRes = await fetch("http://localhost:8000/api/admin/events");
+      const evRes = await fetch("/api/admin/events");
       const evData = await evRes.json();
       
-      const deptRes = await fetch("http://localhost:8000/api/admin/departments");
+      const deptRes = await fetch("/api/admin/departments");
       const deptData = await deptRes.json();
 
       if (evRes.ok && deptRes.ok) {
@@ -101,8 +101,8 @@ function AdminEventsDepartments() {
 
     const isEdit = !!editingItem;
     const url = isEdit 
-      ? `http://localhost:8000/api/admin/${activeTab}/${itemId}`
-      : `http://localhost:8000/api/admin/${activeTab}`;
+      ? `/api/admin/${activeTab}/${itemId}`
+      : `/api/admin/${activeTab}`;
     const method = isEdit ? "PUT" : "POST";
 
     const body = activeTab === "events"
@@ -140,7 +140,7 @@ function AdminEventsDepartments() {
     setErrorMsg("");
     setSuccessMsg("");
     try {
-      const res = await fetch(`http://localhost:8000/api/admin/events/${eventId}/visibility`, {
+      const res = await fetch(`/api/admin/events/${eventId}/visibility`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_visible: !currentVisibility })
@@ -172,7 +172,7 @@ function AdminEventsDepartments() {
     setSuccessMsg("");
 
     try {
-      const res = await fetch(`http://localhost:8000/api/admin/${activeTab}/${id}`, {
+      const res = await fetch(`/api/admin/${activeTab}/${id}`, {
         method: "DELETE"
       });
       const data = await res.json();

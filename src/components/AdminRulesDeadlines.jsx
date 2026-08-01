@@ -31,10 +31,10 @@ function AdminRulesDeadlines() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const evRes = await fetch("http://localhost:8000/api/admin/events");
+      const evRes = await fetch("/api/admin/events");
       const evData = await evRes.json();
       
-      const rdRes = await fetch("http://localhost:8000/api/admin/rules-deadlines");
+      const rdRes = await fetch("/api/admin/rules-deadlines");
       const rdData = await rdRes.json();
 
       if (evRes.ok && rdRes.ok) {
@@ -76,7 +76,7 @@ function AdminRulesDeadlines() {
     setErrorMsg("");
     setSuccessMsg("");
     try {
-      const res = await fetch("http://localhost:8000/api/admin/rules", {
+      const res = await fetch("/api/admin/rules", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rules: updatedRulesList })
@@ -153,7 +153,7 @@ function AdminRulesDeadlines() {
     });
 
     try {
-      const res = await fetch("http://localhost:8000/api/admin/deadlines", {
+      const res = await fetch("/api/admin/deadlines", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -191,7 +191,7 @@ function AdminRulesDeadlines() {
     setErrorMsg("");
     setSuccessMsg("");
     try {
-      const res = await fetch("http://localhost:8000/api/admin/notification", {
+      const res = await fetch("/api/admin/notification", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: notification })

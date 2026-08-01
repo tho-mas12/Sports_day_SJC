@@ -72,7 +72,7 @@ function App() {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/department/${user.dept_id}/first-login`, {
+      const res = await fetch(`/api/department/${user.dept_id}/first-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(firstLoginDetails)

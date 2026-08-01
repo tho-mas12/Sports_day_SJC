@@ -38,7 +38,7 @@ function ViewParticipant({ user }) {
 
   const loadRegistrations = () => {
     setLoading(true);
-    fetch(`http://localhost:8000/api/registration/${user.dept_id}`)
+    fetch(`/api/registration/${user.dept_id}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to load registrations");
         return res.json();
@@ -107,7 +107,7 @@ function ViewParticipant({ user }) {
     setSuccessMsg("");
     
     try {
-      const res = await fetch(`http://localhost:8000/api/registration/delete/${regId}`, {
+      const res = await fetch(`/api/registration/delete/${regId}`, {
         method: "DELETE"
       });
       const data = await res.json();
@@ -189,7 +189,7 @@ function ViewParticipant({ user }) {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/registration/edit/${editingReg.registration_id}`, {
+      const res = await fetch(`/api/registration/edit/${editingReg.registration_id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

@@ -10,7 +10,7 @@ function DepartmentDashboard({ onNavigate, user }) {
 
   // Fetch dashboard data
   useEffect(() => {
-    fetch(`http://localhost:8000/api/department/${user.dept_id}/dashboard`)
+    fetch(`/api/department/${user.dept_id}/dashboard`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to load dashboard data");
         return res.json();

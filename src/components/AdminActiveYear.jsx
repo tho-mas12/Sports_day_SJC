@@ -20,10 +20,10 @@ function AdminActiveYear() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const activeRes = await fetch("http://localhost:8000/api/admin/active-year");
+      const activeRes = await fetch("/api/admin/active-year");
       const activeData = await activeRes.json();
 
-      const listRes = await fetch("http://localhost:8000/api/admin/years");
+      const listRes = await fetch("/api/admin/years");
       const listData = await listRes.json();
 
       if (activeRes.ok && listRes.ok) {
@@ -67,7 +67,7 @@ function AdminActiveYear() {
     }
 
     try {
-      const res = await fetch("http://localhost:8000/api/admin/active-year", {
+      const res = await fetch("/api/admin/active-year", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ year: inputYear.trim() })
@@ -82,7 +82,7 @@ function AdminActiveYear() {
           message: `Active year changed to ${inputYear.trim()} successfully! Registrations data is isolated for this year.`
         });
         // Refresh the list to include the newly registered year
-        const listRes = await fetch("http://localhost:8000/api/admin/years");
+        const listRes = await fetch("/api/admin/years");
         const listData = await listRes.json();
         if (listRes.ok) {
           setYearsList(listData.years || []);
@@ -118,7 +118,7 @@ function AdminActiveYear() {
 
   const executeSwitch = async (yearToSet) => {
     try {
-      const res = await fetch("http://localhost:8000/api/admin/active-year", {
+      const res = await fetch("/api/admin/active-year", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ year: yearToSet })

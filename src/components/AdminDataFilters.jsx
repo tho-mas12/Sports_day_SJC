@@ -29,18 +29,18 @@ function AdminDataFilters() {
   const loadFilterMetadata = async () => {
     try {
       setLoading(true);
-      const deptRes = await fetch("http://localhost:8000/api/admin/departments");
+      const deptRes = await fetch("/api/admin/departments");
       const deptData = await deptRes.json();
       
-      const evRes = await fetch("http://localhost:8000/api/admin/events");
+      const evRes = await fetch("/api/admin/events");
       const evData = await evRes.json();
 
-      const activeYearRes = await fetch("http://localhost:8000/api/admin/active-year");
+      const activeYearRes = await fetch("/api/admin/active-year");
       const activeYearData = await activeYearRes.json();
       const currentActiveYear = activeYearData.active_year || new Date().getFullYear().toString();
 
       // Trigger a default filter query to fetch years and initial records for active year
-      const initFilterRes = await fetch("http://localhost:8000/api/reports/filter", {
+      const initFilterRes = await fetch("/api/reports/filter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ years: [currentActiveYear] })
@@ -93,7 +93,7 @@ function AdminDataFilters() {
     };
 
     try {
-      const res = await fetch("http://localhost:8000/api/reports/filter", {
+      const res = await fetch("/api/reports/filter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

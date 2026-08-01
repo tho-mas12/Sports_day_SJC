@@ -14,7 +14,7 @@ function AdminDepartmentAccess() {
 
   const loadDepartments = () => {
     setLoading(true);
-    fetch("http://localhost:8000/api/admin/departments")
+    fetch("/api/admin/departments")
       .then(res => {
         if (!res.ok) throw new Error("Failed to load departments");
         return res.json();
@@ -48,7 +48,7 @@ function AdminDepartmentAccess() {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/admin/department-access/${selectedDept._id}`, {
+      const res = await fetch(`/api/admin/department-access/${selectedDept._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: password.trim() })

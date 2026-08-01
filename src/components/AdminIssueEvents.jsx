@@ -18,13 +18,13 @@ function AdminIssueEvents() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const deptRes = await fetch("http://localhost:8000/api/admin/departments");
+      const deptRes = await fetch("/api/admin/departments");
       const deptData = await deptRes.json();
       
-      const evRes = await fetch("http://localhost:8000/api/admin/events");
+      const evRes = await fetch("/api/admin/events");
       const evData = await evRes.json();
 
-      const issueRes = await fetch("http://localhost:8000/api/admin/issued-events");
+      const issueRes = await fetch("/api/admin/issued-events");
       const issueData = await issueRes.json();
 
       if (deptRes.ok && evRes.ok && issueRes.ok) {
@@ -95,7 +95,7 @@ function AdminIssueEvents() {
     };
 
     try {
-      const res = await fetch(`http://localhost:8000/api/admin/issued-events/${editingDept._id}`, {
+      const res = await fetch(`/api/admin/issued-events/${editingDept._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

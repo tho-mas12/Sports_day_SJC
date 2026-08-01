@@ -30,7 +30,7 @@ function Profile({ user }) {
 
   const loadProfile = () => {
     setLoading(true);
-    fetch(`http://localhost:8000/api/department/${user.dept_id}/profile`)
+    fetch(`/api/department/${user.dept_id}/profile`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to load profile");
         return res.json();
@@ -64,7 +64,7 @@ function Profile({ user }) {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/department/${user.dept_id}/profile`, {
+      const res = await fetch(`/api/department/${user.dept_id}/profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -107,7 +107,7 @@ function Profile({ user }) {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/api/department/${user.dept_id}/password`, {
+      const res = await fetch(`/api/department/${user.dept_id}/password`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ new_password: newPassword })
