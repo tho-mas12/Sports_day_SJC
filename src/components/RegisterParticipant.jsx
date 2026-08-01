@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, User, UserPlus, Users, BadgeAlert, CheckCircle, ShieldAlert } from "lucide-react";
+import { ArrowLeft, User, UserPlus, Users, BadgeAlert, CheckCircle, ShieldAlert, Trophy, Award } from "lucide-react";
 
 const getEventImage = (eventName) => {
   const name = eventName.toLowerCase();
@@ -302,40 +302,57 @@ function RegisterParticipant({ user, onNavigate }) {
           ) : (
             allowedEvents.map(ev => {
               const isPassed = isDeadlinePassed(ev.id);
+              const isSolo = ev.type === "solo";
               return (
                 <div 
                   key={ev.id} 
                   className={`event-card ${ev.registered || isPassed ? "event-card-shaded" : ""}`}
+                  style={{
+                    minHeight: "180px",
+                    padding: "24px",
+                    borderLeft: `5px solid ${isPassed ? "#ef4444" : ev.registered ? "#10b981" : isSolo ? "var(--color-primary-light)" : "var(--color-accent)"}`,
+                    boxShadow: "var(--shadow-sm)",
+                    borderRadius: "var(--radius-md)",
+                    display: "flex",
+                    flexDirection: "column"
+                  }}
                 >
-                  <img 
-                    src={getEventImage(ev.name)} 
-                    alt={ev.name} 
-                    className="event-card-image"
-                  />
-                  <div className="event-card-body">
-                    <span className={`event-card-badge ${ev.type === "solo" ? "badge-solo" : "badge-team"}`}>
-                      {ev.type}
-                    </span>
-                    <span className={`event-card-badge ${ev.gender === "boys" ? "badge-boys" : "badge-girls"}`} style={{ marginLeft: "6px" }}>
-                      {ev.gender}
-                    </span>
-                    {isPassed && (
-                      <span className="event-card-badge" style={{ marginLeft: "6px", backgroundColor: "#fca5a5", color: "#991b1b" }}>
-                        Deadline Passed
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+                    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                      <span className={`event-card-badge ${ev.type === "solo" ? "badge-solo" : "badge-team"}`} style={{ margin: 0 }}>
+                        {ev.type}
                       </span>
-                    )}
-                    
-                    <h3 className="event-card-title">{ev.name}</h3>
-                    
-                    <button 
-                      className="btn-primary" 
-                      style={{ width: "100%", marginTop: "auto", backgroundColor: isPassed ? "#ef4444" : undefined }}
-                      onClick={() => !isPassed && handleRegisterClick(ev)}
-                      disabled={ev.registered || isPassed}
-                    >
-                      {ev.registered ? "Registered" : isPassed ? "Deadline Passed" : "Register"}
-                    </button>
+                      <span className={`event-card-badge ${ev.gender === "boys" ? "badge-boys" : "badge-girls"}`} style={{ margin: 0 }}>
+                        {ev.gender}
+                      </span>
+                      {isPassed && (
+                        <span className="event-card-badge" style={{ margin: 0, backgroundColor: "#fca5a5", color: "#991b1b" }}>
+                          Passed
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ color: isPassed ? "#ef4444" : ev.registered ? "#10b981" : "#94a3b8" }}>
+                      {ev.registered ? <CheckCircle size={20} /> : isSolo ? <User size={20} /> : <Users size={20} />}
+                    </div>
                   </div>
+                  
+                  <h3 className="event-card-title" style={{ fontSize: "16px", color: "var(--color-primary)", fontWeight: 800, marginBottom: "20px" }}>
+                    {ev.name}
+                  </h3>
+                  
+                  <button 
+                    className="btn-primary" 
+                    style={{ 
+                      width: "100%", 
+                      marginTop: "auto", 
+                      padding: "10px",
+                      backgroundColor: isPassed ? "#ef4444" : ev.registered ? "#10b981" : undefined 
+                    }}
+                    onClick={() => !isPassed && handleRegisterClick(ev)}
+                    disabled={ev.registered || isPassed}
+                  >
+                    {ev.registered ? "Registered" : isPassed ? "Deadline Passed" : "Register"}
+                  </button>
                 </div>
               );
             })
