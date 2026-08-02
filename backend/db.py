@@ -28,9 +28,40 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+import time
+import json
+
+class CollectionCache:
+    def __init__(self, ttl=15):
+        self._cache = {}
+        self.ttl = ttl
+
+    def get(self, key):
+        if key in self._cache:
+            ts, val = self._cache[key]
+            if time.time() - ts < self.ttl:
+                return val
+            else:
+                del self._cache[key]
+        return None
+
+    def set(self, key, value):
+        self._cache[key] = (time.time(), value)
+
+    def invalidate_all(self):
+        self._cache.clear()
+
 class SupabaseCollection:
     def __init__(self, table_name):
         self.table_name = table_name
+        self.use_cache = table_name in ["departments", "events", "system_settings", "issued_events"]
+        self.cache = CollectionCache(ttl=15) if self.use_cache else None
+
+    def _make_cache_key(self, filter_dict):
+        try:
+            return json.dumps(filter_dict, sort_keys=True)
+        except Exception:
+            return str(filter_dict)
 
     def _map_doc(self, doc):
         if not doc:
@@ -54,6 +85,12 @@ class SupabaseCollection:
         if "_id" in filter:
             filter["id"] = filter.pop("_id")
 
+        if self.use_cache:
+            cache_key = "find_one:" + self._make_cache_key(filter)
+            cached = self.cache.get(cache_key)
+            if cached is not None:
+                return cached
+
         query = supabase.table(self.table_name).select("*")
         for k, v in filter.items():
             if isinstance(v, dict):
@@ -66,9 +103,15 @@ class SupabaseCollection:
                 query = query.eq(k, v)
 
         res = query.execute()
+        ret = None
         if res.data and len(res.data) > 0:
-            return self._map_doc(res.data[0])
-        return None
+            ret = self._map_doc(res.data[0])
+
+        if self.use_cache:
+            cache_key = "find_one:" + self._make_cache_key(filter)
+            self.cache.set(cache_key, ret)
+
+        return ret
 
     def find(self, filter=None, *args, **kwargs):
         filter = filter or {}
@@ -76,6 +119,12 @@ class SupabaseCollection:
         if "_id" in filter:
             filter["id"] = filter.pop("_id")
 
+        if self.use_cache:
+            cache_key = "find:" + self._make_cache_key(filter)
+            cached = self.cache.get(cache_key)
+            if cached is not None:
+                return cached
+
         query = supabase.table(self.table_name).select("*")
         for k, v in filter.items():
             if isinstance(v, dict):
@@ -88,9 +137,17 @@ class SupabaseCollection:
                 query = query.eq(k, v)
 
         res = query.execute()
-        return [self._map_doc(d) for d in (res.data or [])]
+        ret = [self._map_doc(d) for d in (res.data or [])]
+
+        if self.use_cache:
+            cache_key = "find:" + self._make_cache_key(filter)
+            self.cache.set(cache_key, ret)
+
+        return ret
 
     def insert_one(self, doc):
+        if self.use_cache:
+            self.cache.invalidate_all()
         doc = dict(doc)
         if "_id" in doc:
             doc["id"] = doc.pop("_id")
@@ -109,6 +166,8 @@ class SupabaseCollection:
         return InsertOneResult(payload.get("id"))
 
     def update_one(self, filter, update, upsert=False, *args, **kwargs):
+        if self.use_cache:
+            self.cache.invalidate_all()
         filter = dict(filter)
         if "_id" in filter:
             filter["id"] = filter.pop("_id")
@@ -180,6 +239,8 @@ class SupabaseCollection:
         return UpdateResult(1 if existing else 0, 1)
 
     def delete_one(self, filter, *args, **kwargs):
+        if self.use_cache:
+            self.cache.invalidate_all()
         filter = dict(filter)
         if "_id" in filter:
             filter["id"] = filter.pop("_id")
@@ -195,6 +256,8 @@ class SupabaseCollection:
         return DeleteResult(len(res.data or []))
 
     def delete_many(self, filter, *args, **kwargs):
+        if self.use_cache:
+            self.cache.invalidate_all()
         filter = dict(filter)
         if "_id" in filter:
             filter["id"] = filter.pop("_id")
@@ -215,6 +278,12 @@ class SupabaseCollection:
         if "_id" in filter:
             filter["id"] = filter.pop("_id")
 
+        if self.use_cache:
+            cache_key = "count:" + self._make_cache_key(filter)
+            cached = self.cache.get(cache_key)
+            if cached is not None:
+                return cached
+
         query = supabase.table(self.table_name).select("*")
         for k, v in filter.items():
             if isinstance(v, dict):
@@ -227,9 +296,17 @@ class SupabaseCollection:
                 query = query.eq(k, v)
 
         res = query.execute()
-        return len(res.data or [])
+        ret = len(res.data or [])
+
+        if self.use_cache:
+            cache_key = "count:" + self._make_cache_key(filter)
+            self.cache.set(cache_key, ret)
+
+        return ret
 
     def update_many(self, filter, update, *args, **kwargs):
+        if self.use_cache:
+            self.cache.invalidate_all()
         records = self.find(filter)
         pull_data = update.get("$pull", {})
         
