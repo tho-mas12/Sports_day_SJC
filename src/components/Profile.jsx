@@ -63,6 +63,16 @@ function Profile({ user }) {
       return;
     }
 
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(vicePhone.trim())) {
+      setErrorMsg("Staff Secretary mobile number must be exactly 10 digits.");
+      return;
+    }
+    if (!phoneRegex.test(studentPhone.trim())) {
+      setErrorMsg("Student Secretary mobile number must be exactly 10 digits.");
+      return;
+    }
+
     try {
       const res = await fetch(`/api/department/${user.dept_id}/profile`, {
         method: "PUT",
@@ -213,7 +223,8 @@ function Profile({ user }) {
                 type="tel" 
                 className="form-input" 
                 value={vicePhone}
-                onChange={e => setVicePhone(e.target.value)}
+                onChange={e => setVicePhone(e.target.value.replace(/\D/g, ""))}
+                maxLength={10}
                 disabled={!isEditing}
                 required
               />
@@ -241,7 +252,8 @@ function Profile({ user }) {
                 type="tel" 
                 className="form-input" 
                 value={studentPhone}
-                onChange={e => setStudentPhone(e.target.value)}
+                onChange={e => setStudentPhone(e.target.value.replace(/\D/g, ""))}
+                maxLength={10}
                 disabled={!isEditing}
                 required
               />

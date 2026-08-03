@@ -71,6 +71,16 @@ function App() {
       return;
     }
 
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(firstLoginDetails.vice_phone.trim())) {
+      setErrorMsg("Staff Secretary mobile number must be exactly 10 digits.");
+      return;
+    }
+    if (!phoneRegex.test(firstLoginDetails.student_phone.trim())) {
+      setErrorMsg("Student Secretary mobile number must be exactly 10 digits.");
+      return;
+    }
+
     try {
       const res = await fetch(`/api/department/${user.dept_id}/first-login`, {
         method: "POST",
@@ -138,7 +148,8 @@ function App() {
                 className="form-input" 
                 placeholder="Enter 10-digit mobile number"
                 value={firstLoginDetails.vice_phone}
-                onChange={e => setFirstLoginDetails({...firstLoginDetails, vice_phone: e.target.value})}
+                onChange={e => setFirstLoginDetails({...firstLoginDetails, vice_phone: e.target.value.replace(/\D/g, "")})}
+                maxLength={10}
                 required
               />
             </div>
@@ -164,7 +175,8 @@ function App() {
                 className="form-input" 
                 placeholder="Enter 10-digit mobile number"
                 value={firstLoginDetails.student_phone}
-                onChange={e => setFirstLoginDetails({...firstLoginDetails, student_phone: e.target.value})}
+                onChange={e => setFirstLoginDetails({...firstLoginDetails, student_phone: e.target.value.replace(/\D/g, "")})}
+                maxLength={10}
                 required
               />
             </div>

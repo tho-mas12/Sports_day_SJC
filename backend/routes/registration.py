@@ -112,6 +112,20 @@ def create_registration(req: RegistrationRequest):
         if not req.student_id or not req.student_name or not req.gender:
             raise HTTPException(status_code=400, detail="Student ID, Name, and Gender are required.")
         
+        student_id = req.student_id.strip()
+        
+        # Prevent registering the same student twice for the same event
+        already_registered = registrations_col.find_one({
+            "event_id": req.event_id,
+            "student_id": student_id,
+            "year": active_year
+        })
+        if already_registered:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Student '{student_id}' is already registered for this event."
+            )
+
         # Rule 1: Max 3 athletes per department in this event (except 800m, etc.)
         if not is_excepted_event(event["name"]):
             existing_count = registrations_col.count_documents({
@@ -126,7 +140,6 @@ def create_registration(req: RegistrationRequest):
                 )
 
         # Rule 2: Max 4 events per athlete
-        student_id = req.student_id.strip()
         athlete_events = check_athlete_event_count(student_id)
         if athlete_events >= 4:
             raise HTTPException(

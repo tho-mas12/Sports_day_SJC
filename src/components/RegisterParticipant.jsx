@@ -30,6 +30,7 @@ function RegisterParticipant({ user, onNavigate }) {
   const [soloDeptNum, setSoloDeptNum] = useState("");
   const [soloGender, setSoloGender] = useState("male");
   const [rulesDisclaimer, setRulesDisclaimer] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   // Team form states
   const [teamLeaderName, setTeamLeaderName] = useState("");
@@ -151,6 +152,9 @@ function RegisterParticipant({ user, onNavigate }) {
       setErrorMsg("Please fill in all details.");
       return;
     }
+    setSubmitting(true);
+    setErrorMsg("");
+    setSuccessMsg("");
 
     try {
       const res = await fetch("/api/registration/register", {
@@ -175,6 +179,8 @@ function RegisterParticipant({ user, onNavigate }) {
       }
     } catch (err) {
       setErrorMsg("Failed to submit registration.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -223,6 +229,9 @@ function RegisterParticipant({ user, onNavigate }) {
       setErrorMsg(`Roster must have exactly ${targetSize} members (1 Leader + ${targetSize - 1} Members).`);
       return;
     }
+    setSubmitting(true);
+    setErrorMsg("");
+    setSuccessMsg("");
 
     try {
       const res = await fetch("/api/registration/register", {
@@ -249,6 +258,8 @@ function RegisterParticipant({ user, onNavigate }) {
       }
     } catch (err) {
       setErrorMsg("Failed to submit team registration.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -425,16 +436,16 @@ function RegisterParticipant({ user, onNavigate }) {
               )}
 
               <div style={{ display: "flex", gap: "12px", marginTop: "32px" }}>
-                <button type="button" className="btn-secondary" onClick={() => setSelectedEvent(null)} style={{ flex: 1 }}>
+                <button type="button" className="btn-secondary" onClick={() => setSelectedEvent(null)} style={{ flex: 1 }} disabled={submitting}>
                   Cancel
                 </button>
                 <button 
                   type="submit" 
                   className="btn-primary" 
                   style={{ flex: 1 }}
-                  disabled={rulesDisclaimer.includes("Error")}
+                  disabled={rulesDisclaimer.includes("Error") || submitting}
                 >
-                  Confirm Registration
+                  {submitting ? "Submitting..." : "Confirm Registration"}
                 </button>
               </div>
             </form>
@@ -533,7 +544,7 @@ function RegisterParticipant({ user, onNavigate }) {
                 </div>
 
                 <div style={{ display: "flex", gap: "12px", marginTop: "32px" }}>
-                  <button type="button" className="btn-secondary" onClick={() => setSelectedEvent(null)} style={{ flex: 1 }}>
+                  <button type="button" className="btn-secondary" onClick={() => setSelectedEvent(null)} style={{ flex: 1 }} disabled={submitting}>
                     Cancel
                   </button>
                   <button 
@@ -541,9 +552,9 @@ function RegisterParticipant({ user, onNavigate }) {
                     className="btn-primary" 
                     onClick={handleTeamSubmit} 
                     style={{ flex: 1 }}
-                    disabled={!isLeaderAdded || teamMembers.length !== ((selectedEvent.max_members || 4) - 1)}
+                    disabled={!isLeaderAdded || teamMembers.length !== ((selectedEvent.max_members || 4) - 1) || submitting}
                   >
-                    Submit Roster
+                    {submitting ? "Submitting..." : "Submit Roster"}
                   </button>
                 </div>
               </div>

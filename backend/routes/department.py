@@ -33,14 +33,23 @@ def first_login_setup(dept_id: str, sec: SecretaryDetails):
     dept = departments_col.find_one({"_id": dept_id})
     if not dept:
         raise HTTPException(status_code=404, detail="Department not found.")
+        
+    # Mobile number length validation
+    v_phone = sec.vice_phone.strip()
+    s_phone = sec.student_phone.strip()
+    if not (v_phone.isdigit() and len(v_phone) == 10):
+        raise HTTPException(status_code=400, detail="Staff Secretary mobile number must be exactly 10 digits.")
+    if not (s_phone.isdigit() and len(s_phone) == 10):
+        raise HTTPException(status_code=400, detail="Student Secretary mobile number must be exactly 10 digits.")
+
     active_year = get_active_year()
     departments_col.update_one(
         {"_id": dept_id},
         {
             "$set": {
                 f"secretaries.{active_year}": {
-                    "vice_secretary": {"name": sec.vice_name, "phone": sec.vice_phone},
-                    "student_secretary": {"name": sec.student_name, "phone": sec.student_phone}
+                    "vice_secretary": {"name": sec.vice_name.strip(), "phone": v_phone},
+                    "student_secretary": {"name": sec.student_name.strip(), "phone": s_phone}
                 }
             }
         }
@@ -52,14 +61,23 @@ def update_profile(dept_id: str, sec: SecretaryDetails):
     dept = departments_col.find_one({"_id": dept_id})
     if not dept:
         raise HTTPException(status_code=404, detail="Department not found.")
+        
+    # Mobile number length validation
+    v_phone = sec.vice_phone.strip()
+    s_phone = sec.student_phone.strip()
+    if not (v_phone.isdigit() and len(v_phone) == 10):
+        raise HTTPException(status_code=400, detail="Staff Secretary mobile number must be exactly 10 digits.")
+    if not (s_phone.isdigit() and len(s_phone) == 10):
+        raise HTTPException(status_code=400, detail="Student Secretary mobile number must be exactly 10 digits.")
+
     active_year = get_active_year()
     departments_col.update_one(
         {"_id": dept_id},
         {
             "$set": {
                 f"secretaries.{active_year}": {
-                    "vice_secretary": {"name": sec.vice_name, "phone": sec.vice_phone},
-                    "student_secretary": {"name": sec.student_name, "phone": sec.student_phone}
+                    "vice_secretary": {"name": sec.vice_name.strip(), "phone": v_phone},
+                    "student_secretary": {"name": sec.student_name.strip(), "phone": s_phone}
                 }
             }
         }
