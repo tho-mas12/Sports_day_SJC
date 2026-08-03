@@ -31,7 +31,7 @@ def filter_registrations(req: FilterRequest):
         event = events.get(event_id, {"name": "Unknown Event", "gender": "both"})
         
         created_at_str = r.get("created_at", datetime.utcnow().isoformat())
-        reg_year = created_at_str[:4]  # Extract year e.g. "2026"
+        reg_year = str(r.get("year") or created_at_str[:4])
         
         if r["type"] == "solo":
             flat_records.append({
