@@ -72,9 +72,13 @@ def is_excepted_event(event_name: str) -> bool:
 def get_department_registrations(dept_id: str):
     active_year = get_active_year()
     regs = list(registrations_col.find({"department_id": dept_id, "year": active_year}))
+    
+    # Batch load all events into memory to resolve N+1 latency
+    events_map = {e["_id"]: e for e in events_col.find()}
+    
     result = []
     for r in regs:
-        event = events_col.find_one({"_id": r["event_id"]})
+        event = events_map.get(r["event_id"])
         result.append({
             "registration_id": r["_id"],
             "event_id": r["event_id"],

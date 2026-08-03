@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar, Save, Loader2 } from "lucide-react";
+import { Calendar, Save, Loader2, Trash2 } from "lucide-react";
 import CustomPopup from "./CustomPopup";
 
 function AdminActiveYear() {
@@ -151,6 +151,49 @@ function AdminActiveYear() {
     }
   };
 
+  const handleDeleteClick = (yearToDelete) => {
+    if (yearToDelete === activeYear) return;
+    setPopup({
+      isOpen: true,
+      type: "confirm",
+      title: "Delete Year",
+      message: `Are you sure you want to delete Year ${yearToDelete}? This action only removes it from the list of years.`,
+      onConfirm: () => executeDelete(yearToDelete)
+    });
+  };
+
+  const executeDelete = async (yearToDelete) => {
+    try {
+      const res = await fetch(`/api/admin/year/${yearToDelete}`, {
+        method: "DELETE"
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setPopup({
+          isOpen: true,
+          type: "success",
+          title: "Delete Successful",
+          message: `Year ${yearToDelete} successfully deleted.`
+        });
+        loadData();
+      } else {
+        setPopup({
+          isOpen: true,
+          type: "danger",
+          title: "Failed to Delete",
+          message: data.detail || "Failed to delete year."
+        });
+      }
+    } catch (err) {
+      setPopup({
+        isOpen: true,
+        type: "danger",
+        title: "Connection Error",
+        message: "Failed to connect to backend server."
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ padding: "40px", textAlign: "center", color: "var(--color-text-muted)" }}>
@@ -232,36 +275,48 @@ function AdminActiveYear() {
 
         <div className="card" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {yearsList.map(y => (
-            <button
+            <div
               key={y}
-              type="button"
-              className="btn-secondary"
               style={{
                 width: "100%",
                 padding: "16px 20px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                fontWeight: y === activeYear ? 800 : 500,
                 border: y === activeYear ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
+                borderRadius: "var(--radius-md)",
                 backgroundColor: y === activeYear ? "#eff6ff" : "white",
-                cursor: y === activeYear ? "default" : "pointer"
               }}
-              onClick={() => handleYearClick(y)}
             >
-              <span style={{ fontSize: "15px", color: y === activeYear ? "var(--color-primary)" : "var(--color-text-dark)" }}>
+              <span style={{ fontSize: "15px", fontWeight: y === activeYear ? 800 : 500, color: y === activeYear ? "var(--color-primary)" : "var(--color-text-dark)" }}>
                 Year {y}
               </span>
-              {y === activeYear ? (
-                <span style={{ fontSize: "11px", backgroundColor: "var(--color-primary)", color: "white", padding: "4px 10px", borderRadius: "var(--radius-sm)", fontWeight: 700 }}>
-                  Active Year
-                </span>
-              ) : (
-                <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
-                  Click to Switch
-                </span>
-              )}
-            </button>
+              
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                {y === activeYear ? (
+                  <span style={{ fontSize: "11px", backgroundColor: "var(--color-primary)", color: "white", padding: "6px 12px", borderRadius: "var(--radius-sm)", fontWeight: 700 }}>
+                    Active Year
+                  </span>
+                ) : (
+                  <>
+                    <button 
+                      className="btn-secondary" 
+                      style={{ padding: "6px 12px", fontSize: "12px", border: "1px solid var(--color-border)" }}
+                      onClick={() => handleYearClick(y)}
+                    >
+                      Set Active
+                    </button>
+                    <button 
+                      className="btn-secondary" 
+                      style={{ padding: "6px 10px", border: "1px solid #fee2e2", color: "var(--color-danger)" }}
+                      onClick={() => handleDeleteClick(y)}
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       </div>

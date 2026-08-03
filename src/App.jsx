@@ -93,7 +93,8 @@ function App() {
         const updatedUser = { ...user, is_first_login: false };
         setUser(updatedUser);
         sessionStorage.setItem("user", JSON.stringify(updatedUser));
-        setCurrentPage("dashboard");
+        sessionStorage.setItem("highlightPassword", "true"); // Flag for Profile page highlight
+        setCurrentPage("profile"); // Redirect to Profile page
         setErrorMsg("");
       } else {
         setErrorMsg(data.detail || "Failed to save details.");

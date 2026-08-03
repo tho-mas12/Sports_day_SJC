@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { User, Phone, Check, Edit2, ShieldCheck, Key } from "lucide-react";
+import { User, Phone, Check, Edit2, ShieldCheck, Key, ShieldAlert } from "lucide-react";
 import CustomPopup from "./CustomPopup";
 
 function Profile({ user }) {
@@ -18,6 +18,7 @@ function Profile({ user }) {
   // Password fields
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [shouldHighlightPassword, setShouldHighlightPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
 
   // Popup state
@@ -52,6 +53,17 @@ function Profile({ user }) {
   useEffect(() => {
     loadProfile();
   }, [user.dept_id]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("highlightPassword") === "true") {
+      setShouldHighlightPassword(true);
+      sessionStorage.removeItem("highlightPassword");
+      const timer = setTimeout(() => {
+        setShouldHighlightPassword(false);
+      }, 10000); // Stop pulsing after 10 seconds
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -298,7 +310,38 @@ function Profile({ user }) {
           </div>
         )}
 
-        <div className="card">
+        <style>{`
+          @keyframes warning-glowing {
+            0% { box-shadow: 0 0 4px #f59e0b; border-color: #f59e0b; }
+            50% { box-shadow: 0 0 16px #f59e0b; border-color: #f59e0b; }
+            100% { box-shadow: 0 0 4px #f59e0b; border-color: #f59e0b; }
+          }
+          .pulse-warning-border {
+            animation: warning-glowing 2s infinite;
+            border: 2px solid #f59e0b !important;
+          }
+        `}</style>
+
+        {shouldHighlightPassword && (
+          <div style={{ 
+            padding: "14px", 
+            backgroundColor: "#fffbeb", 
+            color: "var(--color-warning)", 
+            border: "1px solid #fef3c7", 
+            borderRadius: "var(--radius-md)", 
+            fontSize: "14px", 
+            marginBottom: "24px", 
+            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: "8px"
+          }}>
+            <ShieldAlert size={18} />
+            <span>For security reasons, please change your login password from the default 'sjc'.</span>
+          </div>
+        )}
+
+        <div className={`card ${shouldHighlightPassword ? "pulse-warning-border" : ""}`}>
           <form onSubmit={handlePasswordChange}>
             <h3 style={{ fontSize: "16px", color: "var(--color-primary-light)", borderBottom: "1px solid var(--color-border)", paddingBottom: "6px", marginBottom: "16px" }}>
               Change Password

@@ -245,11 +245,19 @@ def get_admin_active_year():
 @router.put("/active-year")
 def update_admin_active_year(body: ActiveYearModel):
     year_val = body.year.strip()
+    current_year = get_active_year()
+    
     settings_col.update_one(
         {"_id": "active_year"},
         {"$set": {"year": year_val}},
         upsert=True
     )
+    
+    # Erase registrations and department secretaries if switching to a new year
+    if year_val != current_year:
+        registrations_col.delete_many({})
+        departments_col.update_many({}, {"$set": {"secretaries": {}}})
+        
     doc = settings_col.find_one({"_id": "years_list"})
     if not doc:
         years = [year_val]
@@ -264,6 +272,20 @@ def update_admin_active_year(body: ActiveYearModel):
         upsert=True
     )
     return {"success": True, "message": f"Active year updated to {year_val} successfully."}
+
+@router.delete("/year/{year}")
+def delete_admin_year(year: str):
+    active_year = get_active_year()
+    if year == active_year:
+        raise HTTPException(status_code=400, detail="Cannot delete the currently active year.")
+        
+    doc = settings_col.find_one({"_id": "years_list"})
+    if doc:
+        years = doc.get("years", [])
+        if year in years:
+            years.remove(year)
+            settings_col.update_one({"_id": "years_list"}, {"$set": {"years": years}})
+    return {"success": True, "message": f"Year {year} deleted successfully."}
 
 @router.get("/years")
 def get_admin_years():
