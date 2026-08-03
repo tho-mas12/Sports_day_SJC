@@ -89,6 +89,7 @@ def get_dashboard_data(dept_id: str):
     dept = departments_col.find_one({"_id": dept_id})
     if not dept:
         raise HTTPException(status_code=404, detail="Department not found.")
+    secretaries = dept.get("secretaries", {})
     
     # Get issued events for this department
     issued = issued_events_col.find_one({"department_id": dept_id})
