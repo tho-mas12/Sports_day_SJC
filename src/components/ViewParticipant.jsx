@@ -10,17 +10,35 @@ const EXCEPTION_EVENTS = [
 function ViewParticipant({ user }) {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
-  
-  // Custom Popup State
   const [popup, setPopup] = useState({
     isOpen: false,
     type: "success",
     title: "",
-    message: "",
-    onConfirm: null
+    message: ""
   });
+  
+  const showError = (msg) => {
+    if (!msg) return;
+    setPopup({
+      isOpen: true,
+      type: "danger",
+      title: "Error",
+      message: msg
+    });
+  };
+
+  const showSuccess = (msg) => {
+    if (!msg) return;
+    setPopup({
+      isOpen: true,
+      type: "success",
+      title: "Success",
+      message: msg
+    });
+  };
+
+  const setErrorMsg = showError;
+  const setSuccessMsg = showSuccess;
   
   // Edit states
   const [editingReg, setEditingReg] = useState(null);
@@ -242,17 +260,13 @@ function ViewParticipant({ user }) {
         </p>
       </div>
 
-      {errorMsg && (
-        <div style={{ padding: "14px", backgroundColor: "#fef2f2", color: "var(--color-danger)", border: "1px solid #fee2e2", borderRadius: "var(--radius-md)", fontSize: "14px", marginBottom: "24px", fontWeight: 600 }}>
-          {errorMsg}
-        </div>
-      )}
-
-      {successMsg && (
-        <div style={{ padding: "14px", backgroundColor: "#f0fdf4", color: "var(--color-success)", border: "1px solid #dcfce7", borderRadius: "var(--radius-md)", fontSize: "14px", marginBottom: "24px", fontWeight: 600 }}>
-          {successMsg}
-        </div>
-      )}
+      <CustomPopup
+        isOpen={popup.isOpen}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+      />
 
       {/* Edit View Overlay Modal */}
       {editingReg && (
@@ -286,7 +300,7 @@ function ViewParticipant({ user }) {
                     type="text" 
                     className="form-input" 
                     value={soloDeptNum}
-                    onChange={e => setSoloDeptNum(e.target.value)}
+                    onChange={e => setSoloDeptNum(e.target.value.toUpperCase())}
                     required
                   />
                 </div>
@@ -322,7 +336,7 @@ function ViewParticipant({ user }) {
                     </div>
                     <div className="form-group">
                       <label className="form-label">Dept Number</label>
-                      <input type="text" className="form-input" value={teamLeaderDeptNum} onChange={e => setTeamLeaderDeptNum(e.target.value)} required />
+                      <input type="text" className="form-input" value={teamLeaderDeptNum} onChange={e => setTeamLeaderDeptNum(e.target.value.toUpperCase())} required />
                     </div>
 
                     <h3 style={{ fontSize: "15px", marginTop: "20px", marginBottom: "12px", color: "var(--color-primary)" }}>Add Member</h3>
@@ -336,7 +350,7 @@ function ViewParticipant({ user }) {
                         </div>
                         <div className="form-group">
                           <label className="form-label">Dept Number</label>
-                          <input type="text" className="form-input" value={memberDeptNum} onChange={e => setMemberDeptNum(e.target.value)} />
+                          <input type="text" className="form-input" value={memberDeptNum} onChange={e => setMemberDeptNum(e.target.value.toUpperCase())} />
                         </div>
                         <div className="form-group">
                           <label className="form-label">Gender</label>
@@ -368,7 +382,7 @@ function ViewParticipant({ user }) {
                           className="form-input" 
                           style={{ padding: "4px 8px", fontSize: "12px", height: "28px", backgroundColor: "white" }} 
                           value={teamLeaderDeptNum} 
-                          onChange={e => setTeamLeaderDeptNum(e.target.value)} 
+                          onChange={e => setTeamLeaderDeptNum(e.target.value.toUpperCase())} 
                         />
                       </div>
                       

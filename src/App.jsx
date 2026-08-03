@@ -332,8 +332,8 @@ function App() {
         {/* Render pages dynamically based on current page selection */}
         {user.role === "department" ? (
           <>
-            {currentPage === "dashboard" && <DepartmentDashboard onNavigate={setCurrentPage} user={user} />}
-            {currentPage === "register" && <RegisterParticipant user={user} onNavigate={setCurrentPage} />}
+            {currentPage === "dashboard" && <DepartmentDashboard onNavigate={setCurrentPage} user={user} setUser={setUser} />}
+            {currentPage === "register" && <RegisterParticipant user={user} onNavigate={setCurrentPage} setUser={setUser} />}
             {currentPage === "view" && <ViewParticipant user={user} />}
             {currentPage === "profile" && <Profile user={user} />}
           </>

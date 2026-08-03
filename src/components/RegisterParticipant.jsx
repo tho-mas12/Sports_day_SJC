@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import { ArrowLeft, User, UserPlus, Users, BadgeAlert, CheckCircle, ShieldAlert, Trophy, Award } from "lucide-react";
+import CustomPopup from "./CustomPopup";
 
 const getEventImage = (eventName) => {
   const name = eventName.toLowerCase();
@@ -15,7 +15,9 @@ const EXCEPTION_EVENTS = [
   "800 mts race", "1500 mts race", "5000 mts race", "10000 mts race", "20km walk"
 ];
 
-function RegisterParticipant({ user, onNavigate }) {
+import React, { useState, useEffect } from "react";
+
+function RegisterParticipant({ user, onNavigate, setUser }) {
   const [allowedEvents, setAllowedEvents] = useState([]);
   const [deptRegs, setDeptRegs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +26,35 @@ function RegisterParticipant({ user, onNavigate }) {
   const [successMsg, setSuccessMsg] = useState("");
   const [commonDeadline, setCommonDeadline] = useState(null);
   const [eventDeadlines, setEventDeadlines] = useState({});
+  const [popup, setPopup] = useState({
+    isOpen: false,
+    type: "success",
+    title: "",
+    message: ""
+  });
+
+  const showError = (msg) => {
+    if (!msg) return;
+    setPopup({
+      isOpen: true,
+      type: "danger",
+      title: "Error",
+      message: msg
+    });
+  };
+
+  const showSuccess = (msg) => {
+    if (!msg) return;
+    setPopup({
+      isOpen: true,
+      type: "success",
+      title: "Success",
+      message: msg
+    });
+  };
+
+  const setErrorMsg = showError;
+  const setSuccessMsg = showSuccess;
 
   // Solo form states
   const [soloName, setSoloName] = useState("");
@@ -52,6 +83,12 @@ function RegisterParticipant({ user, onNavigate }) {
       const regsData = await regsRes.json();
 
       if (dashRes.ok && regsRes.ok) {
+        if (dashData.is_first_login && !user.is_first_login) {
+          const updatedUser = { ...user, is_first_login: true };
+          setUser(updatedUser);
+          sessionStorage.setItem("user", JSON.stringify(updatedUser));
+          return;
+        }
         // Combine solo and team events
         const combinedEvents = [...dashData.solo_events, ...dashData.team_events];
         setAllowedEvents(combinedEvents);
@@ -291,17 +328,13 @@ function RegisterParticipant({ user, onNavigate }) {
         </div>
       </div>
 
-      {errorMsg && (
-        <div style={{ padding: "14px", backgroundColor: "#fef2f2", color: "var(--color-danger)", border: "1px solid #fee2e2", borderRadius: "var(--radius-md)", fontSize: "14px", marginBottom: "24px", fontWeight: 600 }}>
-          {errorMsg}
-        </div>
-      )}
-
-      {successMsg && (
-        <div style={{ padding: "14px", backgroundColor: "#f0fdf4", color: "var(--color-success)", border: "1px solid #dcfce7", borderRadius: "var(--radius-md)", fontSize: "14px", marginBottom: "24px", fontWeight: 600 }}>
-          {successMsg}
-        </div>
-      )}
+      <CustomPopup
+        isOpen={popup.isOpen}
+        type={popup.type}
+        title={popup.title}
+        message={popup.message}
+        onClose={() => setPopup({ ...popup, isOpen: false })}
+      />
 
       {/* 1. Main Grid of Event Cards */}
       {!selectedEvent ? (
@@ -392,7 +425,7 @@ function RegisterParticipant({ user, onNavigate }) {
                   type="text" 
                   className="form-input" 
                   value={soloDeptNum}
-                  onChange={e => setSoloDeptNum(e.target.value)}
+                  onChange={e => setSoloDeptNum(e.target.value.toUpperCase())}
                   required 
                 />
               </div>
@@ -475,7 +508,7 @@ function RegisterParticipant({ user, onNavigate }) {
                       type="text" 
                       className="form-input" 
                       value={teamLeaderDeptNum}
-                      onChange={e => setTeamLeaderDeptNum(e.target.value)}
+                      onChange={e => setTeamLeaderDeptNum(e.target.value.toUpperCase())}
                       disabled={isLeaderAdded}
                     />
                   </div>
@@ -516,7 +549,7 @@ function RegisterParticipant({ user, onNavigate }) {
                           type="text" 
                           className="form-input" 
                           value={memberDeptNum}
-                          onChange={e => setMemberDeptNum(e.target.value)}
+                          onChange={e => setMemberDeptNum(e.target.value.toUpperCase())}
                         />
                       </div>
                       <div className="form-group">

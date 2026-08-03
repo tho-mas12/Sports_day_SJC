@@ -177,7 +177,8 @@ def get_dashboard_data(dept_id: str):
         "rules": rules,
         "common_deadline": common_deadline,
         "event_deadlines": event_deadlines,
-        "notification": notification
+        "notification": notification,
+        "is_first_login": active_year not in secretaries
     }
 
 class ChangePasswordModel(BaseModel):

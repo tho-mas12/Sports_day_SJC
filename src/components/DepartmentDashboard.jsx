@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BookOpen, AlertCircle, Clock, Trophy, Users, CheckCircle, HelpCircle } from "lucide-react";
 
-function DepartmentDashboard({ onNavigate, user }) {
+function DepartmentDashboard({ onNavigate, user, setUser }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
@@ -16,6 +16,12 @@ function DepartmentDashboard({ onNavigate, user }) {
         return res.json();
       })
       .then(resData => {
+        if (resData.is_first_login && !user.is_first_login) {
+          const updatedUser = { ...user, is_first_login: true };
+          setUser(updatedUser);
+          sessionStorage.setItem("user", JSON.stringify(updatedUser));
+          return;
+        }
         setData(resData);
         setLoading(false);
       })
@@ -23,7 +29,7 @@ function DepartmentDashboard({ onNavigate, user }) {
         setErrorMsg("Failed to load dashboard data.");
         setLoading(false);
       });
-  }, [user.dept_id]);
+  }, [user.dept_id, user.is_first_login]);
 
   // Countdown timer logic
   useEffect(() => {
