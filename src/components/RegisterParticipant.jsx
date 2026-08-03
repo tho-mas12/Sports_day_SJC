@@ -22,8 +22,6 @@ function RegisterParticipant({ user, onNavigate, setUser }) {
   const [deptRegs, setDeptRegs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
   const [commonDeadline, setCommonDeadline] = useState(null);
   const [eventDeadlines, setEventDeadlines] = useState({});
   const [popup, setPopup] = useState({
