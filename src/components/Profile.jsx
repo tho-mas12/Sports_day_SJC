@@ -187,8 +187,8 @@ function Profile({ user }) {
               <p style={{ fontWeight: 700, color: "var(--color-primary)" }}>{profile.name}</p>
             </div>
             <div>
-              <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase" }}>Shift Assignment</span>
-              <p style={{ fontWeight: 700, color: "var(--color-primary)" }}>Shift {profile.shift === 1 ? "I" : "II"}</p>
+              <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase" }}>Division / Shift</span>
+              <p style={{ fontWeight: 700, color: "var(--color-primary)" }}>{profile.shift === 1 ? "Shift I (Boys)" : profile.shift === 2 ? "Shift II (Boys)" : "Girls Competition"}</p>
             </div>
             <div>
               <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--color-text-muted)", textTransform: "uppercase" }}>Department ID</span>

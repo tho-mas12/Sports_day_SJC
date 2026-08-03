@@ -392,6 +392,7 @@ def seed_database():
         print("Seeded default notifications.")
 
     # 2. Seed Events
+    # 2. Seed Events
     boys_events = [
         {"_id": "b_100m", "name": "100 Mts. Dash", "type": "solo", "gender": "boys", "max_members": 1, "is_visible": True, "other_details": ""},
         {"_id": "b_200m", "name": "200 Mts. Dash", "type": "solo", "gender": "boys", "max_members": 1, "is_visible": True, "other_details": ""},
@@ -421,7 +422,7 @@ def seed_database():
         {"_id": "g_sp", "name": "Shot Put", "type": "solo", "gender": "girls", "max_members": 1, "is_visible": True, "other_details": ""},
         {"_id": "g_dt", "name": "Discus Throw", "type": "solo", "gender": "girls", "max_members": 1, "is_visible": True, "other_details": ""},
         {"_id": "g_400m", "name": "400 Mts Dash", "type": "solo", "gender": "girls", "max_members": 1, "is_visible": True, "other_details": ""},
-        {"_id": "g_800m", "name": "800 Mts. Race", "type": "solo", "gender": "girls", "max_members": 1, "is_visible": True, "other_details": ""},
+        {"_id": "g_800m", "name": "800 mts", "type": "solo", "gender": "girls", "max_members": 1, "is_visible": True, "other_details": ""},
         {"_id": "g_relay_4x100", "name": "4x100 Mts. Relay", "type": "team", "gender": "girls", "max_members": 4, "is_visible": True, "other_details": ""},
     ]
 
@@ -443,61 +444,71 @@ def seed_database():
 
     print(f"Seeded/Updated {len(all_events)} events.")
 
-    # 3. Seed Departments
-    shift1_depts = [
-        ("hrm_s1", "Dept. of HRM"),
-        ("chemistry_s1", "Dept. of Chemistry"),
-        ("commerce_s1", "Dept. of Commerce"),
-        ("english_s1", "Dept. of English"),
-        ("history_s1", "Dept. of History"),
-        ("cs_s1", "Dept. of Computer Science"),
-        ("economics_s1", "Dept. of Economics"),
-        ("maths_s1", "Dept. of Mathematics"),
-        ("physics_s1", "Dept. of Physics"),
-        ("botany_s1", "Dept. of Botany"),
-        ("tamil_s1", "Dept. of Tamil"),
-        ("bvoc_viscom_s1", "B.Voc. & B.Sc. Viscom"),
-        ("statistics_s1", "Dept. of Statistics"),
+    # 3. Seed Restructured Departments
+    shift1_boys = [
+        ("hrm_s1", "Dept. of HRM (Shift I - Boys)"),
+        ("chemistry_s1", "Dept. of Chemistry (Shift I - Boys)"),
+        ("commerce_s1", "Dept. of Commerce (Shift I - Boys)"),
+        ("english_s1", "Dept. of English (Shift I - Boys)"),
+        ("history_s1", "Dept. of History (Shift I - Boys)"),
+        ("cs_s1", "Dept. of Computer Science (Shift I - Boys)"),
+        ("economics_s1", "Dept. of Economics (Shift I - Boys)"),
+        ("maths_s1", "Dept. of Mathematics (Shift I - Boys)"),
+        ("physics_s1", "Dept. of Physics (Shift I - Boys)"),
+        ("botany_s1", "Dept. of Botany (Shift I - Boys)"),
+        ("tamil_s1", "Dept. of Tamil (Shift I - Boys)"),
+        ("statistics_s1", "Dept. of Statistics (Shift I - Boys)"),
     ]
 
-    shift2_depts = [
-        ("bsc_cs_s2", "B.Sc. Computer Science"),
-        ("it_s2", "Information Tech"),
-        ("bba_s2", "BBA"),
-        ("biochem_biotech_s2", "Bio. Chem. & Bio Tech"),
-        ("maths_s2", "Maths."),
-        ("commerce_s2", "Commerce"),
-        ("commerce_ca_s2", "Commerce CA"),
-        ("english_s2", "English ."),
-        ("physics_s2", "Physics"),
-        ("bcom_honours_s2", "B.Com. Honours & Analytics"),
-        ("electronics_chemistry_s2", "Electronics & Chemistry"),
-        ("ds_ai_s2", "Data Science & Artificial Intelligence"),
-        ("counselling_psych_s2", "Counselling Psychology"),
+    shift2_boys = [
+        ("cs_s2", "B.Sc. Computer Science (Shift II - Boys)"),
+        ("it_s2", "Information Tech (Shift II - Boys)"),
+        ("bba_s2", "BBA (Shift II - Boys)"),
+        ("biochem_s2", "Bio. Chem. & Bio Tech (Shift II - Boys)"),
+        ("maths_s2", "Maths. (Shift II - Boys)"),
+        ("commerce_s2", "Commerce (Shift II - Boys)"),
+        ("commerce_ca_s2", "Commerce CA (Shift II - Boys)"),
+        ("english_s2", "English (Shift II - Boys)"),
+        ("physics_chem_s2", "Physics & Chemistry (Shift II - Boys)"),
+        ("bcom_honors_s2", "B.Com., Honors (Shift II - Boys)"),
+        ("bcom_sf_s2", "B.Com. Strategic Finance (Shift II - Boys)"),
+        ("bcom_ba_s2", "B.Com. Business Analytics (Shift II - Boys)"),
+        ("electronics_s2", "Electronics (Shift II - Boys)"),
+        ("ds_ai_s2", "Data Science & Artificial Intelligence (Shift II - Boys)"),
+        ("psychology_s2", "Dept. of Counselling Psychology (Shift II - Boys)"),
+        ("bvoc_viscom_s2", "B.Voc. (SD & SA + Viscom Tech) & B.Sc./M.Sc. Viscom (Shift II - Boys)"),
+        ("physical_edu_s2", "Physical Education (Shift II - Boys)"),
     ]
 
-    girls_allowed_names = [
-        "botany", "chemistry", "commerce", "economics", "computer science",
-        "it", "information tech", "english", "hrm", "mathematics", "maths",
-        "physics", "electronics", "b.voc", "viscom", "statistics", "tamil",
-        "bio chemistry", "bio technology", "biochem", "biotech", "commerce ca",
-        "b.com", "honours", "strategic finance", "business analytics",
-        "data science", "artificial intelligence", "machine learning",
-        "counselling psychology", "history"
+    girls_depts = [
+        ("botany_girls", "Dept. of Botany (Girls)"),
+        ("chemistry_girls", "Dept. of Chemistry (Girls)"),
+        ("commerce_econ_girls", "Dept. of Commerce & Economics (Girls)"),
+        ("cs_girls", "Dept. of Computer Science (Girls)"),
+        ("it_girls", "Dept. of Information Technology (Girls)"),
+        ("english_girls", "Dept. of English (Girls)"),
+        ("hrm_girls", "Dept. of HRM (Girls)"),
+        ("maths_girls", "Dept. of Mathematics (Girls)"),
+        ("physics_elec_girls", "Dept. of Physics & Electronics (Girls)"),
+        ("bvoc_viscom_girls", "Dept. of B.Voc., (SD & SA) & B.Sc. Viscom. (Girls)"),
+        ("statistics_girls", "Dept. of Statistics (Girls)"),
+        ("tamil_girls", "Dept. of Tamil (Girls)"),
+        ("biochem_girls", "Dept. of Bio-Chemistry (Girls)"),
+        ("biotech_girls", "Dept. of Bio-Technology (Girls)"),
+        ("commerce_ca_girls", "Dept. of Commerce CA (Girls)"),
+        ("bcom_h_sf_ba_girls", "B.Com., Honors, Strategic Finance & Business Analytic (Girls)"),
+        ("ds_ai_ml_girls", "Dept. of Data Science & Artificial Intelligence & Machine Learning (Girls)"),
+        ("psychology_girls", "Dept. of Counselling Psychology (Girls)"),
+        ("history_girls", "Dept. of History (Girls)"),
     ]
-
-    def is_girls_allowed(dept_name: str) -> bool:
-        name_lower = dept_name.lower()
-        for keyword in girls_allowed_names:
-            if keyword in name_lower:
-                return True
-        return False
 
     all_depts = []
-    for d_id, d_name in shift1_depts:
-        all_depts.append({"_id": d_id, "name": d_name, "shift": 1})
-    for d_id, d_name in shift2_depts:
-        all_depts.append({"_id": d_id, "name": d_name, "shift": 2})
+    for d_id, d_name in shift1_boys:
+        all_depts.append({"_id": d_id, "name": d_name, "shift": 1, "is_girls": False})
+    for d_id, d_name in shift2_boys:
+        all_depts.append({"_id": d_id, "name": d_name, "shift": 2, "is_girls": False})
+    for d_id, d_name in girls_depts:
+        all_depts.append({"_id": d_id, "name": d_name, "shift": 3, "is_girls": True})
 
     for dept in all_depts:
         db_dept = departments_col.find_one({"_id": dept["_id"]})
@@ -506,15 +517,15 @@ def seed_database():
                 "_id": dept["_id"],
                 "name": dept["name"],
                 "shift": dept["shift"],
-                "password": "",
+                "password": "sjc",
                 "secretaries": {}
             })
             print(f"Seeded department: {dept['name']}")
         
         issued = issued_events_col.find_one({"department_id": dept["_id"]})
         if not issued:
-            b_ev_ids = [e["_id"] for e in boys_events]
-            g_ev_ids = [e["_id"] for e in girls_events] if is_girls_allowed(dept["name"]) else []
+            b_ev_ids = [e["_id"] for e in boys_events] if not dept["is_girls"] else []
+            g_ev_ids = [e["_id"] for e in girls_events] if dept["is_girls"] else []
             
             issued_events_col.insert_one({
                 "department_id": dept["_id"],

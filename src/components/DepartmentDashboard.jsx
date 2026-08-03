@@ -103,7 +103,7 @@ function DepartmentDashboard({ onNavigate, user }) {
             {data.dept_name} Dashboard
           </h1>
           <p style={{ color: "var(--color-text-muted)", fontSize: "14px" }}>
-            Shift {data.shift === 1 ? "I" : "II"} • Sports Day Registration Portal
+            {data.shift === 1 ? "Shift I (Boys)" : data.shift === 2 ? "Shift II (Boys)" : "Girls Competition"} • Sports Day Registration Portal
           </p>
         </div>
         

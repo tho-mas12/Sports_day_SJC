@@ -12,7 +12,7 @@ function AdminDepartmentSecretary() {
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
-  const [shiftFilter, setShiftFilter] = useState("all"); // "all", "1", "2"
+  const [shiftFilter, setShiftFilter] = useState("all"); // "all", "1", "2", "3"
 
   const loadSecretaries = () => {
     setLoading(true);
@@ -56,7 +56,7 @@ function AdminDepartmentSecretary() {
     const dataToExport = filteredSecretaries.map((s, index) => ({
       "S.No": index + 1,
       "Department": s.dept_name,
-      "Shift": s.shift === 1 ? "Shift I" : "Shift II",
+      "Shift": s.shift === 1 ? "Shift I (Boys)" : s.shift === 2 ? "Shift II (Boys)" : "Girls Competition",
       "Staff Secretary Name": s.vice_secretary?.name || "Not Entered",
       "Staff Secretary Mobile": s.vice_secretary?.phone || "Not Entered",
       "Student Secretary Name": s.student_secretary?.name || "Not Entered",
@@ -94,7 +94,7 @@ function AdminDepartmentSecretary() {
     const data = filteredSecretaries.map((s, idx) => [
       idx + 1,
       s.dept_name,
-      s.shift === 1 ? "Shift I" : "Shift II",
+      s.shift === 1 ? "Shift I (Boys)" : s.shift === 2 ? "Shift II (Boys)" : "Girls Competition",
       s.vice_secretary?.name || "N/A",
       s.vice_secretary?.phone || "N/A",
       s.student_secretary?.name || "N/A",
@@ -182,9 +182,10 @@ function AdminDepartmentSecretary() {
           value={shiftFilter} 
           onChange={e => setShiftFilter(e.target.value)}
         >
-          <option value="all">All Shifts</option>
-          <option value="1">Shift I</option>
-          <option value="2">Shift II</option>
+          <option value="all">All Divisions</option>
+          <option value="1">Shift I (Boys)</option>
+          <option value="2">Shift II (Boys)</option>
+          <option value="3">Girls Competition</option>
         </select>
       </div>
 
@@ -212,7 +213,7 @@ function AdminDepartmentSecretary() {
                 <tr key={s.dept_id}>
                   <td>{idx + 1}</td>
                   <td style={{ fontWeight: 700 }}>{s.dept_name}</td>
-                  <td>Shift {s.shift === 1 ? "I" : "II"}</td>
+                  <td>{s.shift === 1 ? "Shift I (Boys)" : s.shift === 2 ? "Shift II (Boys)" : "Girls Competition"}</td>
                   <td>
                     {s.vice_secretary ? (
                       <div>

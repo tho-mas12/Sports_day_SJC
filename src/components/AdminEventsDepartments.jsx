@@ -318,11 +318,9 @@ function AdminEventsDepartments() {
         <div className="event-grid">
           {departments.map(dept => (
             <div key={dept._id} className="event-card" style={{ padding: "20px" }}>
-              <div style={{ marginBottom: "12px" }}>
-                <span className={`event-card-badge ${dept.shift === 1 ? "badge-boys" : "badge-girls"}`}>
-                  Shift {dept.shift === 1 ? "I" : "II"}
+                <span className={`event-card-badge ${dept.shift === 1 ? "badge-boys" : dept.shift === 2 ? "badge-girls" : "badge-solo"}`} style={{ backgroundColor: dept.shift === 3 ? "#fae8ff" : undefined, color: dept.shift === 3 ? "#a21caf" : undefined }}>
+                  {dept.shift === 1 ? "Shift I (Boys)" : dept.shift === 2 ? "Shift II (Boys)" : "Girls Competition"}
                 </span>
-              </div>
               <h3 style={{ fontSize: "16px", marginBottom: "4px" }}>{dept.name}</h3>
               <p style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "monospace", marginBottom: "20px" }}>ID: {dept._id}</p>
               

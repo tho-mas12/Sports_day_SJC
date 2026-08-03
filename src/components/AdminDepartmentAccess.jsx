@@ -89,13 +89,19 @@ function AdminDepartmentAccess() {
           className={`tab-btn ${activeShift === 1 ? "active" : ""}`}
           onClick={() => { setActiveShift(1); setErrorMsg(""); setSuccessMsg(""); }}
         >
-          Shift I Teams
+          Shift I Teams (Boys)
         </button>
         <button 
           className={`tab-btn ${activeShift === 2 ? "active" : ""}`}
           onClick={() => { setActiveShift(2); setErrorMsg(""); setSuccessMsg(""); }}
         >
-          Shift II Teams
+          Shift II Teams (Boys)
+        </button>
+        <button 
+          className={`tab-btn ${activeShift === 3 ? "active" : ""}`}
+          onClick={() => { setActiveShift(3); setErrorMsg(""); setSuccessMsg(""); }}
+        >
+          Girls Teams (Shift I + II)
         </button>
       </div>
 
@@ -118,8 +124,8 @@ function AdminDepartmentAccess() {
           return (
             <div key={dept._id} className="event-card" style={{ padding: "24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
-                <span className={`event-card-badge ${dept.shift === 1 ? "badge-boys" : "badge-girls"}`}>
-                  Shift {dept.shift === 1 ? "I" : "II"}
+                <span className={`event-card-badge ${dept.shift === 1 ? "badge-boys" : dept.shift === 2 ? "badge-girls" : "badge-solo"}`} style={{ backgroundColor: dept.shift === 3 ? "#fae8ff" : undefined, color: dept.shift === 3 ? "#a21caf" : undefined }}>
+                  {dept.shift === 1 ? "Shift I (Boys)" : dept.shift === 2 ? "Shift II (Boys)" : "Girls Competition"}
                 </span>
                 
                 <span style={{ 

@@ -19,7 +19,7 @@ function AdminDataFilters() {
   });
 
   // Selected filter states
-  const [selectedShifts, setSelectedShifts] = useState([1, 2]);
+  const [selectedShifts, setSelectedShifts] = useState([1, 2, 3]);
   const [selectedGenders, setSelectedGenders] = useState(["male", "female"]);
   const [selectedYears, setSelectedYears] = useState([]);
   const [selectedDepts, setSelectedDepts] = useState([]);
@@ -138,7 +138,7 @@ function AdminDataFilters() {
       "Department no": r.student_id,
       "participation name": r.student_name,
       "Department": r.dept_name,
-      "Shift": r.shift === 1 ? "Shift I" : "Shift II",
+      "Shift": r.shift === 1 ? "Shift I (Boys)" : r.shift === 2 ? "Shift II (Boys)" : "Girls Competition",
       "Gender": r.gender.toUpperCase(),
       "Event Name": r.event_name,
       "Event Type": r.event_type.toUpperCase(),
@@ -181,7 +181,7 @@ function AdminDataFilters() {
       r.student_id,
       r.student_name,
       r.dept_name,
-      r.shift === 1 ? "Shift I" : "Shift II",
+      r.shift === 1 ? "Shift I (Boys)" : r.shift === 2 ? "Shift II (Boys)" : "Girls Competition",
       r.gender.toUpperCase(),
       r.event_name,
       r.role,
@@ -229,7 +229,7 @@ function AdminDataFilters() {
       r.student_id,
       r.dept_name,
       r.event_name,
-      r.shift === 1 ? "Shift I" : "Shift II",
+      r.shift === 1 ? "Shift I (Boys)" : r.shift === 2 ? "Shift II (Boys)" : "Girls Competition",
       "", // Present space
       ""  // Absent space
     ]);
@@ -357,7 +357,7 @@ function AdminDataFilters() {
                   <td style={{ fontWeight: 700, fontFamily: "monospace" }}>{r.student_id}</td>
                   <td>{r.student_name}</td>
                   <td>{r.dept_name}</td>
-                  <td>Shift {r.shift === 1 ? "I" : "II"}</td>
+                  <td>{r.shift === 1 ? "Shift I (Boys)" : r.shift === 2 ? "Shift II (Boys)" : "Girls Competition"}</td>
                   <td style={{ textTransform: "capitalize" }}>{r.gender}</td>
                   <td>{r.event_name}</td>
                   <td>
@@ -414,25 +414,29 @@ function AdminDataFilters() {
                 </div>
               </div>
 
-              {/* Filter 2: Shift */}
+              {/* Filter 2: Shift / Division */}
               <div style={{ marginBottom: "28px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                  <h4 className="form-label" style={{ fontSize: "11px" }}>Shifts</h4>
+                  <h4 className="form-label" style={{ fontSize: "11px" }}>Shifts / Divisions</h4>
                   <button 
                     style={{ fontSize: "11px", color: "var(--color-primary-light)", background: "none", border: "none", cursor: "pointer" }}
-                    onClick={() => toggleSelectAll(selectedShifts, setSelectedShifts, [1, 2])}
+                    onClick={() => toggleSelectAll(selectedShifts, setSelectedShifts, [1, 2, 3])}
                   >
                     Select All
                   </button>
                 </div>
-                <div style={{ display: "flex", gap: "12px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
                   <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", cursor: "pointer" }}>
                     <input type="checkbox" checked={selectedShifts.includes(1)} onChange={() => handleItemCheck(selectedShifts, setSelectedShifts, 1)} />
-                    <span>Shift I</span>
+                    <span>Shift I (Boys)</span>
                   </label>
                   <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", cursor: "pointer" }}>
                     <input type="checkbox" checked={selectedShifts.includes(2)} onChange={() => handleItemCheck(selectedShifts, setSelectedShifts, 2)} />
-                    <span>Shift II</span>
+                    <span>Shift II (Boys)</span>
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", cursor: "pointer" }}>
+                    <input type="checkbox" checked={selectedShifts.includes(3)} onChange={() => handleItemCheck(selectedShifts, setSelectedShifts, 3)} />
+                    <span>Girls Competition</span>
                   </label>
                 </div>
               </div>
@@ -479,7 +483,7 @@ function AdminDataFilters() {
                         checked={selectedDepts.includes(d._id)} 
                         onChange={() => handleItemCheck(selectedDepts, setSelectedDepts, d._id)} 
                       />
-                      <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{d.name} (S{d.shift})</span>
+                      <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }} title={d.name}>{d.name}</span>
                     </label>
                   ))}
                 </div>

@@ -17,8 +17,13 @@ function Login({ onLogin }) {
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
-          // Sort departments alphabetically
-          const sorted = [...data].sort((a, b) => a.name.localeCompare(b.name));
+          // Sort departments by shift (1=Shift I Boys, 2=Shift II Boys, 3=Girls), then name
+          const sorted = [...data].sort((a, b) => {
+            if (a.shift !== b.shift) {
+              return a.shift - b.shift;
+            }
+            return a.name.localeCompare(b.name);
+          });
           setDepartments(sorted);
           if (sorted.length > 0) {
             setSelectedDept(sorted[0]._id);
@@ -161,11 +166,29 @@ function Login({ onLogin }) {
                 {departments.length === 0 ? (
                   <option value="">Loading departments...</option>
                 ) : (
-                  departments.map((d) => (
-                    <option key={d._id} value={d._id}>
-                      {d.name} ({d.shift === 1 ? "Shift I" : "Shift II"})
-                    </option>
-                  ))
+                  <>
+                    {departments.some(d => d.shift === 1) && (
+                      <optgroup label="Shift I (Boys)">
+                        {departments.filter(d => d.shift === 1).map(d => (
+                          <option key={d._id} value={d._id}>{d.name}</option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {departments.some(d => d.shift === 2) && (
+                      <optgroup label="Shift II (Boys)">
+                        {departments.filter(d => d.shift === 2).map(d => (
+                          <option key={d._id} value={d._id}>{d.name}</option>
+                        ))}
+                      </optgroup>
+                    )}
+                    {departments.some(d => d.shift === 3) && (
+                      <optgroup label="Girls (Shift I + II)">
+                        {departments.filter(d => d.shift === 3).map(d => (
+                          <option key={d._id} value={d._id}>{d.name}</option>
+                        ))}
+                      </optgroup>
+                    )}
+                  </>
                 )}
               </select>
             </div>
