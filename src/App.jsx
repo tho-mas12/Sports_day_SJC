@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Login from "./components/Login";
+import LandingPage from "./components/landing/LandingPage";
 import sportsLogo from "./assets/sjc_logo.png";
 import DepartmentDashboard from "./components/DepartmentDashboard";
 import RegisterParticipant from "./components/RegisterParticipant";
@@ -39,6 +40,7 @@ function App() {
   });
 
   const [currentPage, setCurrentPage] = useState("dashboard");
+  const [showLogin, setShowLogin] = useState(false);
   const [firstLoginDetails, setFirstLoginDetails] = useState({
     vice_name: "",
     vice_phone: "",
@@ -58,6 +60,7 @@ function App() {
     setUser(null);
     sessionStorage.removeItem("user");
     setCurrentPage("dashboard");
+    setShowLogin(false);
   };
 
   // First Login Secretary form submission
@@ -106,9 +109,12 @@ function App() {
     }
   };
 
-  // If not logged in, render Login page
+  // If not logged in, render Landing page or Login page
   if (!user) {
-    return <Login onLogin={login} />;
+    if (showLogin) {
+      return <Login onLogin={login} onBack={() => setShowLogin(false)} />;
+    }
+    return <LandingPage onOpenLogin={() => setShowLogin(true)} />;
   }
 
   // If logged in as Department, but first login: show mandatory Secretary Form

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { KeyRound, ShieldAlert, School, CalendarDays } from "lucide-react";
 import sjcLogo from "../assets/sjc_logo.png";
 
-function Login({ onLogin }) {
+function Login({ onLogin, onBack }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [departments, setDepartments] = useState([]);
   const [selectedDept, setSelectedDept] = useState("");
@@ -88,6 +88,12 @@ function Login({ onLogin }) {
 
   return (
     <div className="login-wrapper">
+      {onBack && (
+        <button className="admin-toggle-btn" onClick={onBack} style={{ left: "24px", right: "auto" }}>
+          &larr; Back to Home
+        </button>
+      )}
+
       {/* Top right corner admin/dept toggle button */}
       <button className="admin-toggle-btn" onClick={handleToggle}>
         {isAdmin ? "Department Login" : "Admin Login"}
