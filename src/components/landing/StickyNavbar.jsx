@@ -50,11 +50,11 @@ export default function StickyNavbar({ onOpenLogin }) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Left: Brand block (visible on all screens) */}
-        <a href="#home" className="flex items-center gap-2 group text-decoration-none shrink-0">
+        <a href="#home" className="flex items-center gap-3 group text-decoration-none shrink-0">
           <img 
             src="/Img/logo.jpeg" 
             alt="SJC Logo" 
-            className="w-8 h-8 rounded object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-11 h-11 rounded object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <div className="flex flex-col text-left">
             <span className="font-bold font-['Poppins'] text-slate-900 text-xs sm:text-sm tracking-tight">

@@ -39,6 +39,12 @@ export default function HeroSection({ onOpenLogin, onOpenRules }) {
           </button>
         </div>
 
+        {/* Blinking First Login Info Notification */}
+        <div className="mb-10 px-5 py-3.5 rounded-2xl bg-amber-500/90 text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 max-w-xl mx-auto shadow-md border border-amber-400 blink-notification">
+          <span className="inline-block w-2 h-2 rounded-full bg-white shrink-0 animate-ping" />
+          <span>For the First Login For All Departments Password is <strong>"sjc"</strong>, after login change the password.</span>
+        </div>
+
         {/* Micro Metadata Banner */}
         <div className="flex flex-wrap items-center justify-center gap-6 pt-6 text-xs text-slate-500 border-t border-gray-200/80 w-full max-w-2xl">
           <div className="text-center px-4">
