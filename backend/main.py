@@ -35,6 +35,8 @@ def read_root():
 
 @app.get("/health")
 @app.get("/api/health")
+@app.head("/health")
+@app.head("/api/health")
 def health_check():
     try:
         from db import get_active_year
