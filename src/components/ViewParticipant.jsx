@@ -170,7 +170,12 @@ function ViewParticipant({ user }) {
       setTeamMembers([...reg.members]);
       setMemberName("");
       setMemberDeptNum("");
-      setMemberGender("male");
+      
+      // Default memberGender to the gender of the first member or event division
+      const defaultTeamGender = reg.members && reg.members.length > 0 
+        ? reg.members[0].gender 
+        : (reg.gender || "male");
+      setMemberGender(defaultTeamGender);
     }
   };
 
@@ -306,10 +311,13 @@ function ViewParticipant({ user }) {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Gender</label>
-                  <select className="form-select" value={soloGender} onChange={e => setSoloGender(e.target.value)}>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={soloGender === "female" ? "Female" : "Male"} 
+                    disabled 
+                    style={{ backgroundColor: "#f1f5f9", cursor: "not-allowed" }}
+                  />
                 </div>
 
                 {rulesDisclaimer && (
@@ -354,10 +362,13 @@ function ViewParticipant({ user }) {
                         </div>
                         <div className="form-group">
                           <label className="form-label">Gender</label>
-                          <select className="form-select" value={memberGender} onChange={e => setMemberGender(e.target.value)}>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                          </select>
+                          <input 
+                            type="text" 
+                            className="form-input" 
+                            value={memberGender === "female" ? "Female" : "Male"} 
+                            disabled 
+                            style={{ backgroundColor: "#f1f5f9", cursor: "not-allowed" }}
+                          />
                         </div>
                         <button type="button" className="btn-secondary" onClick={handleAddMember} style={{ width: "100%" }}>Add Member</button>
                       </>
