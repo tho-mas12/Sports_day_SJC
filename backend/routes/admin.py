@@ -253,10 +253,9 @@ def update_admin_active_year(body: ActiveYearModel):
         upsert=True
     )
     
-    # Erase registrations and department secretaries if switching to a new year
-    if year_val != current_year:
-        registrations_col.delete_many({})
-        departments_col.update_many({}, {"$set": {"secretaries": {}}})
+    # Unconditionally erase registrations and reset department secretaries first login details
+    registrations_col.delete_many({})
+    departments_col.update_many({}, {"$set": {"secretaries": {}}})
         
     doc = settings_col.find_one({"_id": "years_list"})
     if not doc:
