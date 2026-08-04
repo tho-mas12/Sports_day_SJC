@@ -9,21 +9,6 @@ export default function HeroSection({ onOpenLogin, onOpenRules }) {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 flex flex-col items-center">
         
-        {/* Left-Aligned Header Block */}
-        <div className="w-full flex items-center gap-4 mb-12 justify-start border-b border-gray-200/50 pb-6">
-          <div className="hover:scale-105 transition-transform duration-300">
-            <img 
-              src="/Img/logo.jpeg" 
-              alt="SJC Logo" 
-              className="w-20 h-20 md:w-24 md:h-24 object-contain"
-            />
-          </div>
-          <div className="flex flex-col text-left">
-            <span className="font-extrabold font-['Poppins'] text-slate-900 text-xl md:text-2xl lg:text-3xl tracking-tight leading-tight">
-              St. Joseph's College (Autonomous), Tiruchirappalli
-            </span>
-          </div>
-        </div>
 
         {/* Main Headings (Centered) */}
         <div className="space-y-4 mb-8 text-center">

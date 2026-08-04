@@ -49,37 +49,41 @@ export default function StickyNavbar({ onOpenLogin }) {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-        {/* Mobile Brand indicator */}
-        <div className="flex md:hidden items-center gap-2">
+        {/* Left: Brand block (visible on all screens) */}
+        <a href="#home" className="flex items-center gap-2 group text-decoration-none shrink-0">
           <img 
             src="/Img/logo.jpeg" 
             alt="SJC Logo" 
-            className="w-7 h-7 rounded-md object-cover"
+            className="w-8 h-8 rounded object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          <span className="font-bold font-['Poppins'] text-slate-900 text-sm">
-            SJC Sports
-          </span>
+          <div className="flex flex-col text-left">
+            <span className="font-bold font-['Poppins'] text-slate-900 text-xs sm:text-sm tracking-tight">
+              St. Joseph's College (Autonomous), Tiruchirappalli
+            </span>
+          </div>
+        </a>
+
+        {/* Center Nav Links - Desktop (Centered absolutely) */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block">
+          <nav className="flex items-center gap-1 bg-white/80 p-1.5 rounded-full border border-gray-200/80 shadow-sm">
+            {navLinks.map((link) => (
+              <a
+                key={link.id}
+                href={link.href}
+                className={`px-6 py-1.5 rounded-full text-sm font-medium transition-all duration-200 text-decoration-none ${
+                  activeSection === link.id
+                    ? 'bg-[#2563EB] text-white shadow-sm font-semibold'
+                    : 'text-slate-600 hover:text-[#2563EB] hover:bg-blue-50/60'
+                }`}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
         </div>
 
-        {/* Center Nav Links - Desktop (Home, Rules, Events) */}
-        <nav className="hidden md:flex items-center gap-1 bg-white/80 p-1.5 rounded-full border border-gray-200/80 shadow-sm">
-          {navLinks.map((link) => (
-            <a
-              key={link.id}
-              href={link.href}
-              className={`px-6 py-1.5 rounded-full text-sm font-medium transition-all duration-200 text-decoration-none ${
-                activeSection === link.id
-                  ? 'bg-[#2563EB] text-white shadow-sm font-semibold'
-                  : 'text-slate-600 hover:text-[#2563EB] hover:bg-blue-50/60'
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
         {/* Right: Department Login Button */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-3 shrink-0">
           <button 
             onClick={onOpenLogin}
             className="btn-primary py-2.5 px-5 text-sm rounded-[18px] flex items-center gap-2"

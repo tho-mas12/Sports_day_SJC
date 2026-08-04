@@ -11,7 +11,7 @@
   --color-primary: #1e40af;       /* Deep Royal Blue */
   --color-primary-light: #3b82f6; /* Modern Blue */
   --color-primary-hover: #1d4ed8;
-  --color-bg-main: rgba(243, 247, 250, 0.15);       /* Very light cool-gray background */
+  --color-bg-main: #f3f7fa;       /* Very light cool-gray background */
   --color-bg-card: rgba(255, 255, 255, 0.65);
   --color-text-dark: #0f172a;     /* Slate-900 */
   --color-text-muted: #64748b;    /* Slate-500 */
@@ -283,7 +283,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: transparent;
+  background: radial-gradient(circle at 0% 0%, #eff6ff 0%, #ffffff 50%, #eff6ff 100%);
   position: relative;
   padding: 20px;
 }

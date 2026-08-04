@@ -372,29 +372,33 @@ function App() {
     );
   };
 
+  const isLandingPage = !user && !showLogin;
+
   return (
     <div style={{ position: "relative", minHeight: "100vh" }}>
-      {/* Background Video */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        style={{
-          position: "fixed",
-          right: 0,
-          bottom: 0,
-          minWidth: "100%",
-          minHeight: "100%",
-          width: "auto",
-          height: "auto",
-          zIndex: -10,
-          objectFit: "cover",
-          filter: "brightness(0.7) contrast(1.05)",
-        }}
-      >
-        <source src="/edit_1.mp4" type="video/mp4" />
-      </video>
+      {/* Background Video (Landing Page Only) */}
+      {isLandingPage && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: "fixed",
+            right: 0,
+            bottom: 0,
+            minWidth: "100%",
+            minHeight: "100%",
+            width: "auto",
+            height: "auto",
+            zIndex: -10,
+            objectFit: "cover",
+            filter: "brightness(0.7) contrast(1.05)",
+          }}
+        >
+          <source src="/edit_1.mp4" type="video/mp4" />
+        </video>
+      )}
 
       {renderContent()}
     </div>
