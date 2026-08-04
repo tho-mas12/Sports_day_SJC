@@ -21,15 +21,15 @@ export default function RulesModal({ isOpen, onClose, title = "Sports Day Instru
   const isDates = title.toLowerCase().includes('date');
 
   // Content for Dates section
+  // Content for Dates section
   const datesContent = (
-    <pre className="whitespace-pre-wrap bg-gray-50 p-4 rounded-md border border-gray-200 overflow-auto max-h-96 font-sans">
-      IMPORTANT DATES TO REMEMBER – COLLEGE SPORTS DAY 2026
-      
-      Sl.No.	Event			Date		Time
-      1	College Sports Day		21.08.2026		-
-      2	All Sportspersons should assemble at the venue for march past 	21.08.2026	1.15 pm.
-      3	Athletics Heats Begin		18.08.2026	-
-    </pre>
+    <div className="flex justify-center items-center overflow-auto max-h-[60vh] p-2 bg-slate-50 rounded-xl border border-gray-200">
+      <img 
+        src="/Img/impor_date.png" 
+        alt="Important Dates - SJC Sports Day 2026" 
+        className="max-w-full h-auto object-contain rounded-lg"
+      />
+    </div>
   );
 
   // Content for PDF view/download
@@ -93,8 +93,8 @@ export default function RulesModal({ isOpen, onClose, title = "Sports Day Instru
   const content = isDates ? datesContent : (pdfPath ? pdfContent : defaultContent);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-gray-200">
         <div className="p-6 border-b flex items-center justify-between">
           <h3 className="font-['Poppins'] text-xl font-bold text-slate-900">{title}</h3>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
@@ -110,12 +110,16 @@ export default function RulesModal({ isOpen, onClose, title = "Sports Day Instru
             </div>
           )}
         </div>
-        {!pdfPath && (
+        {(!pdfPath || isDates) && (
           <div className="p-4 bg-slate-50 border-t flex justify-end">
-            <button onClick={handleDownload} className="bg-blue-600 text-white py-2.5 px-6 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition-colors">
+            <a 
+              href={pdfPath || "/Img/Sports Day 2026 -General Instructions.pdf"}
+              download
+              className="bg-blue-600 text-white py-2.5 px-6 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition-colors text-decoration-none"
+            >
               <Download className="w-4 h-4" />
-              <span>Download {title} PDF</span>
-            </button>
+              <span>Download PDF</span>
+            </a>
           </div>
         )}
       </div>

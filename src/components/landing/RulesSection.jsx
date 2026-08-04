@@ -152,26 +152,6 @@ export default function RulesSection({ onOpenRules }) {
             );
           })}
         </div>
-
-        {/* Notice Banner Below Rules */}
-        <div className="mt-10 bg-blue-50/80 border border-blue-200 rounded-[18px] p-4 sm:p-5 flex items-center justify-between gap-4 flex-col sm:flex-row">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#2563EB] text-white flex items-center justify-center shrink-0">
-              <ShieldAlert className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-['Poppins'] text-sm font-bold text-slate-900">Need specific clarifications on team sizes or fixtures?</h4>
-              <p className="text-xs text-slate-600">Contact the SJC Physical Education Department for official ruling interpretations.</p>
-            </div>
-          </div>
-          <button 
-            onClick={() => onOpenRules("Complete Rulebook PDF")}
-            className="btn-secondary py-2 px-4 text-xs rounded-xl whitespace-nowrap"
-          >
-            <span>View Full Rulebook</span>
-          </button>
-        </div>
-
       </div>
     </section>
   );

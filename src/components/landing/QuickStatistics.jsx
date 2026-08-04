@@ -80,18 +80,9 @@ export default function QuickStatistics() {
   ];
 
   return (
-    <section className="py-12 bg-[#F8FAFC]">
+    <section className="py-12 bg-transparent">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <span className="section-title-tag">Portal Overview</span>
-          <h2 className="section-heading">Quick Statistics</h2>
-          <p className="section-subheading mx-auto">
-            Live numbers from the St. Joseph's College Sports Day portal database.
-          </p>
-        </div>
-
         {/* 4 Equal Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, idx) => {
@@ -99,13 +90,13 @@ export default function QuickStatistics() {
             return (
               <div 
                 key={idx}
-                className="saas-card saas-card-glow p-6 flex flex-col justify-between relative overflow-hidden group"
+                className="bg-white/65 backdrop-blur-xl border border-white/30 rounded-[18px] p-6 flex flex-col justify-between relative overflow-hidden group shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
               >
                 {/* Subtle Hover Gradient Bar */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#2563EB] to-[#3B82F6] opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-semibold text-slate-500 font-['Inter']">
+                  <span className="text-sm font-bold text-slate-500 font-['Inter']">
                     {stat.title}
                   </span>
                   <div className={`w-11 h-11 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-300`}>
@@ -139,7 +130,6 @@ export default function QuickStatistics() {
             );
           })}
         </div>
-
       </div>
     </section>
   );

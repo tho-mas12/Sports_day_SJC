@@ -36,11 +36,6 @@ export default function TopAnnouncementBar() {
           </div>
         </div>
 
-        {/* Action Link */}
-        <div className="hidden md:flex items-center gap-1 text-xs text-blue-100 hover:text-white shrink-0 cursor-pointer font-medium">
-          <span>View All</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </div>
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ export default function LandingPage({ onOpenLogin }) {
         {/* SECTION 3: Hero Section */}
         <HeroSection 
           onOpenLogin={onOpenLogin} 
-          onOpenRules={() => handleOpenRules("Complete Rulebook PDF")} 
+          onOpenRules={() => handleOpenRules("Sports Day Instructions")} 
         />
 
         {/* SECTION 4: Registration Deadline */}

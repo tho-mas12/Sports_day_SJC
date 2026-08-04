@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { KeyRound, ShieldAlert, School, CalendarDays } from "lucide-react";
 import sjcLogo from "../assets/sjc_logo.png";
+import Footer from "./landing/Footer";
 
 function Login({ onLogin, onBack }) {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -87,19 +88,20 @@ function Login({ onLogin, onBack }) {
   };
 
   return (
-    <div className="login-wrapper">
-      {onBack && (
-        <button className="admin-toggle-btn" onClick={onBack} style={{ left: "24px", right: "auto" }}>
-          &larr; Back to Home
+    <div className="login-wrapper" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", padding: 0 }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "100%", padding: "40px", position: "relative" }}>
+        {onBack && (
+          <button className="admin-toggle-btn" onClick={onBack} style={{ left: "24px", right: "auto", top: "24px" }}>
+            &larr; Back to Home
+          </button>
+        )}
+
+        {/* Top right corner admin/dept toggle button */}
+        <button className="admin-toggle-btn" onClick={handleToggle} style={{ top: "24px", right: "24px" }}>
+          {isAdmin ? "Department Login" : "Admin Login"}
         </button>
-      )}
 
-      {/* Top right corner admin/dept toggle button */}
-      <button className="admin-toggle-btn" onClick={handleToggle}>
-        {isAdmin ? "Department Login" : "Admin Login"}
-      </button>
-
-      <div className="login-card animate-scale-up">
+        <div className="login-card animate-scale-up">
         {/* Brand/Header */}
         <div style={{ textAlign: "center", marginBottom: "32px" }}>
           <div style={{ 
@@ -229,6 +231,8 @@ function Login({ onLogin, onBack }) {
           <p>Sports Day Registration System</p>
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

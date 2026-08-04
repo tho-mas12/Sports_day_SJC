@@ -9,7 +9,7 @@ export default function SportsEventsSection({ onOpenLogin }) {
   const shiftsData = {
     SHIFT_I: {
       title: "ORDER OF EVENTS – SHIFT – I",
-      subtitle: "Men's Track & Field Championship (Shift I)",
+      subtitle: "",
       venue: "Mahe Ground",
       dates: [
         {
@@ -65,7 +65,7 @@ export default function SportsEventsSection({ onOpenLogin }) {
     },
     SHIFT_II: {
       title: "ORDER OF EVENTS – SHIFT – II",
-      subtitle: "Men's Track & Field Championship (Shift II)",
+      subtitle: "",
       venue: "Mahe Ground",
       dates: [
         {
@@ -121,7 +121,7 @@ export default function SportsEventsSection({ onOpenLogin }) {
     },
     GIRLS: {
       title: "ORDER OF EVENTS – Girls",
-      subtitle: "Women's Track & Field Championship (Combined Shift I & II)",
+      subtitle: "",
       venue: "Mahe Ground",
       dates: [
         {
@@ -190,10 +190,9 @@ export default function SportsEventsSection({ onOpenLogin }) {
     <section id="events" className="py-16 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
-        {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
           <div>
-            <span className="section-title-tag">Official Timetable Schedule</span>
+            <span className="section-title-tag">Official Schedule</span>
             <h2 className="section-heading mb-2">Order of Events</h2>
             <p className="section-subheading">
               Official day-by-day timetable for Shift-I, Shift-II, and Girls athletic competitions at Mahe Ground.

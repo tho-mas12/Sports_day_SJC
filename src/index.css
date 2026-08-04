@@ -11,8 +11,8 @@
   --color-primary: #1e40af;       /* Deep Royal Blue */
   --color-primary-light: #3b82f6; /* Modern Blue */
   --color-primary-hover: #1d4ed8;
-  --color-bg-main: #f3f7fa;       /* Very light cool-gray background */
-  --color-bg-card: #ffffff;
+  --color-bg-main: rgba(243, 247, 250, 0.15);       /* Very light cool-gray background */
+  --color-bg-card: rgba(255, 255, 255, 0.65);
   --color-text-dark: #0f172a;     /* Slate-900 */
   --color-text-muted: #64748b;    /* Slate-500 */
   --color-border: #e2e8f0;        /* Slate-200 */
@@ -111,8 +111,9 @@ h1, h2, h3, h4, h5, h6 {
 /* Sidebar Navigation styling */
 .sidebar {
   width: 280px;
-  background-color: #ffffff;
-  border-right: 1px solid var(--color-border);
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column;
   padding: 24px 16px;
@@ -201,10 +202,11 @@ h1, h2, h3, h4, h5, h6 {
 /* Sleek Premium Components */
 .card {
   background: var(--color-bg-card);
+  backdrop-filter: blur(20px) saturate(140%);
   border-radius: var(--radius-lg);
   padding: 28px;
   box-shadow: var(--shadow-md);
-  border: 1px solid rgba(226, 232, 240, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.35);
   transition: transform var(--transition-normal), box-shadow var(--transition-normal);
 }
 
@@ -288,11 +290,12 @@ h1, h2, h3, h4, h5, h6 {
 
 .login-card {
   width: 440px;
-  background: white;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px) saturate(140%);
   border-radius: var(--radius-lg);
   padding: 40px;
   box-shadow: var(--shadow-premium);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   position: relative;
   animation: fadeIn 0.4s ease-out;
 }

@@ -66,9 +66,6 @@ export default function StickyNavbar({ onOpenLogin }) {
               <span className="font-bold font-['Poppins'] text-slate-900 text-lg tracking-tight group-hover:text-[#2563EB] transition-colors">
                 SJC SPORTS DAY 2026
               </span>
-              <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-100 text-[#2563EB]">
-                <ShieldCheck className="w-3 h-3 mr-0.5" /> Autonomous
-              </span>
             </div>
             <span className="text-xs text-slate-500 font-medium -mt-1 hidden sm:block">
               St. Joseph's College (Autonomous), Tiruchirappalli
