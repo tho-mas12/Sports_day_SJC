@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 shadow-md">
+    <footer className="bg-[#0f1b2d] text-slate-400 py-6 border-t border-slate-800 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
         
         {/* Left: Copyright */}
@@ -11,7 +11,7 @@ export default function Footer() {
         </div>
 
         {/* Right: Frontier Wox Branding Only */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <span className="text-xs text-slate-500 font-medium uppercase tracking-wider">
             Powered by
           </span>
@@ -25,7 +25,7 @@ export default function Footer() {
             <img 
               src="/Img/FWT_FT.png" 
               alt="Frontier Wox" 
-              className="h-10 w-auto object-contain" 
+              className="h-14 md:h-16 w-auto object-contain" 
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </a>
