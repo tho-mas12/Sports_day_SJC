@@ -110,7 +110,7 @@ export default function RulesModal({ isOpen, onClose, title = "Sports Day Instru
             </div>
           )}
         </div>
-        {(!pdfPath || isDates) && (
+        {!isDates && (
           <div className="p-4 bg-slate-50 border-t flex justify-end">
             <a 
               href={pdfPath || "/Img/Sports Day 2026 -General Instructions.pdf"}

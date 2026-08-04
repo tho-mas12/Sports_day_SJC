@@ -49,29 +49,17 @@ export default function StickyNavbar({ onOpenLogin }) {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
-        {/* Left: College Logo & Brand */}
-        <a href="#home" className="flex items-center gap-3 group text-decoration-none">
-          <div className="w-10 h-10 rounded-xl bg-white p-0.5 border border-gray-200 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform duration-300 overflow-hidden">
-            <img 
-              src="/Img/logo.jpeg" 
-              alt="SJC Logo" 
-              className="w-full h-full object-contain rounded-lg"
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
-            />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <span className="font-bold font-['Poppins'] text-slate-900 text-lg tracking-tight group-hover:text-[#2563EB] transition-colors">
-                SJC SPORTS DAY 2026
-              </span>
-            </div>
-            <span className="text-xs text-slate-500 font-medium -mt-1 hidden sm:block">
-              St. Joseph's College (Autonomous), Tiruchirappalli
-            </span>
-          </div>
-        </a>
+        {/* Mobile Brand indicator */}
+        <div className="flex md:hidden items-center gap-2">
+          <img 
+            src="/Img/logo.jpeg" 
+            alt="SJC Logo" 
+            className="w-7 h-7 rounded-md object-cover"
+          />
+          <span className="font-bold font-['Poppins'] text-slate-900 text-sm">
+            SJC Sports
+          </span>
+        </div>
 
         {/* Center Nav Links - Desktop (Home, Rules, Events) */}
         <nav className="hidden md:flex items-center gap-1 bg-white/80 p-1.5 rounded-full border border-gray-200/80 shadow-sm">

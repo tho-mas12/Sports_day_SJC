@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen, UserCheck, FileCheck, Download, ExternalLink, ShieldAlert, X, CheckCircle } from 'lucide-react';
+import { BookOpen, UserCheck, FileCheck, Download, ExternalLink, ShieldAlert, X, CheckCircle, Eye } from 'lucide-react';
 
 export function RulesModal({ isOpen, onClose, title = "Sports Day Instructions" }) {
   const [downloaded, setDownloaded] = useState(false);
@@ -91,14 +91,16 @@ export default function RulesSection({ onOpenRules }) {
       fileSize: "2.4 MB • PDF",
       icon: BookOpen,
       badge: "Official Document PDF",
+      isDownload: true,
       action: () => onOpenRules('Sports Day Instructions'),
     },
     {
       title: 'Dates to Remember',
-      description: 'View and download the Sports Day 2026 Date to Remember PDF.',
-      fileSize: "0.6 MB • PDF",
+      description: 'View the official Sports Day 2026 schedule and important dates table.',
+      fileSize: "Schedule Image Viewer",
       icon: FileCheck,
-      badge: "Schedule PDF",
+      badge: "Schedule Table",
+      isDownload: false,
       action: () => onOpenRules('Dates to Remember'),
     },
   ];
@@ -144,8 +146,17 @@ export default function RulesSection({ onOpenRules }) {
                     onClick={card.action}
                     className="btn-primary py-2.5 px-4 text-xs rounded-xl flex items-center gap-1.5 shadow-sm"
                   >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download</span>
+                    {card.isDownload ? (
+                      <>
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download</span>
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>View</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
