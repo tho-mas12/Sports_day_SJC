@@ -2,17 +2,17 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#122b51] text-slate-300 py-3 border-t border-slate-800 shadow-md" style={{ width: "100%" }}>
+    <footer className="w-full bg-[#173461] text-slate-300 py-3 shadow-md" style={{ width: "100%" }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
         
         {/* Left: Copyright */}
-        <div className="text-xs sm:text-sm text-slate-400 font-medium">
+        <div className="text-xs sm:text-sm text-slate-300/80 font-medium">
           © 2026 SJC, Tiruchirappalli-02. All Rights Reserved
         </div>
 
         {/* Right: Frontier Wox Branding Only */}
         <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">
+          <span className="text-xs text-slate-300/80 font-medium uppercase tracking-wider">
             Powered by
           </span>
           <a 
