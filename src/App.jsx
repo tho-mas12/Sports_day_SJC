@@ -14,6 +14,7 @@ import AdminRulesDeadlines from "./components/AdminRulesDeadlines";
 import AdminDepartmentSecretary from "./components/AdminDepartmentSecretary";
 import AdminIssueEvents from "./components/AdminIssueEvents";
 import AdminActiveYear from "./components/AdminActiveYear";
+import AdminRegisteredDepartments from "./components/AdminRegisteredDepartments";
 
 import { 
   LayoutDashboard, 
@@ -27,7 +28,8 @@ import {
   Key, 
   BookOpen, 
   CalendarDays, 
-  Layers 
+  Layers,
+  CheckSquare
 } from "lucide-react";
 
 function App() {
@@ -307,6 +309,15 @@ function App() {
                 <span>Issue Dep_events</span>
               </button>
             </li>
+            <li>
+              <button 
+                onClick={() => setCurrentPage("admin_registered_depts")} 
+                className={`sidebar-item-btn ${currentPage === "admin_registered_depts" ? "active" : ""}`}
+              >
+                <CheckSquare size={18} />
+                <span>Registered Departments</span>
+              </button>
+            </li>
           </ul>
         )}
 
@@ -347,6 +358,7 @@ function App() {
             {currentPage === "admin_rules_deadlines" && <AdminRulesDeadlines />}
             {currentPage === "admin_dept_secretary" && <AdminDepartmentSecretary />}
             {currentPage === "admin_issue_events" && <AdminIssueEvents />}
+            {currentPage === "admin_registered_depts" && <AdminRegisteredDepartments />}
           </>
         )}
       </main>

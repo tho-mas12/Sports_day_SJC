@@ -136,3 +136,55 @@ def get_secretaries_list():
             "student_secretary": sec_details.get("student_secretary")
         })
     return res
+
+@router.get("/registrations-audit")
+def get_registrations_audit():
+    active_year = get_active_year()
+    depts = list(departments_col.find())
+    events = list(events_col.find({"is_visible": {"$ne": False}}))
+    regs = list(registrations_col.find({"year": active_year}))
+    
+    # Map event_id -> set of department_ids that registered
+    registered_map = {}
+    for r in regs:
+        ev_id = r["event_id"]
+        dept_id = r["department_id"]
+        if ev_id not in registered_map:
+            registered_map[ev_id] = set()
+        registered_map[ev_id].add(dept_id)
+        
+    audit_data = []
+    for ev in events:
+        ev_id = ev["_id"]
+        ev_gender = ev.get("gender", "boys").lower()
+        
+        # Shift 1 & 2 = Boys, Shift 3 = Girls
+        if ev_gender == "girls":
+            eligible_depts = [d for d in depts if d.get("shift") == 3]
+        else:
+            eligible_depts = [d for d in depts if d.get("shift") in [1, 2]]
+            
+        registered_depts = []
+        not_registered_depts = []
+        
+        registered_set = registered_map.get(ev_id, set())
+        for d in eligible_depts:
+            dept_info = {
+                "id": d["_id"],
+                "name": d["name"],
+                "shift": d["shift"]
+            }
+            if d["_id"] in registered_set:
+                registered_depts.append(dept_info)
+            else:
+                not_registered_depts.append(dept_info)
+                
+        audit_data.append({
+            "event_id": ev_id,
+            "event_name": ev["name"],
+            "category": ev_gender,
+            "registered": registered_depts,
+            "not_registered": not_registered_depts
+        })
+        
+    return audit_data
