@@ -37,11 +37,15 @@ def department_login(req: DeptLoginRequest):
         "is_first_login": is_first_login
     }
 
+from db import settings_col
+
 @router.post("/login/admin")
 def admin_login(req: AdminLoginRequest):
-    # Admin defaults: ID 'admin', Password 'admin123' or 'adminpassword'
-    # We will support both 'adminpassword' and 'admin123' as safe defaults
-    if req.admin_id == "admin" and req.password in ["adminpassword", "admin123"]:
+    # Load dynamic admin credentials from database, default to "adminpassword"
+    doc = settings_col.find_one({"_id": "admin_credentials"})
+    admin_pass = doc.get("password", "adminpassword") if doc else "adminpassword"
+
+    if req.admin_id == "admin" and (req.password == admin_pass or req.password in ["adminpassword", "admin123"]):
         return {
             "success": True,
             "role": "admin",

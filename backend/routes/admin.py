@@ -300,3 +300,24 @@ def get_admin_years():
             years = sorted(years + [active_year])
             settings_col.update_one({"_id": "years_list"}, {"$set": {"years": years}})
     return {"years": years}
+
+class AdminPasswordModel(BaseModel):
+    password: str
+
+@router.get("/admin-password")
+def get_admin_password():
+    doc = settings_col.find_one({"_id": "admin_credentials"})
+    admin_pass = doc.get("password", "adminpassword") if doc else "adminpassword"
+    return {"password": admin_pass}
+
+@router.put("/admin-password")
+def update_admin_password(body: AdminPasswordModel):
+    pass_val = body.password.strip()
+    if not pass_val:
+        raise HTTPException(status_code=400, detail="Password cannot be empty.")
+    settings_col.update_one(
+        {"_id": "admin_credentials"},
+        {"$set": {"password": pass_val}},
+        upsert=True
+    )
+    return {"success": True, "message": "Admin password updated successfully."}

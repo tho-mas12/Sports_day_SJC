@@ -11,6 +11,51 @@ function AdminDepartmentAccess() {
   // Modal states
   const [selectedDept, setSelectedDept] = useState(null);
   const [password, setPassword] = useState("");
+  
+  // Admin password states
+  const [adminPassword, setAdminPassword] = useState("");
+
+  const loadAdminPassword = async () => {
+    try {
+      const res = await fetch("/api/admin/admin-password");
+      const data = await res.json();
+      if (res.ok) {
+        setAdminPassword(data.password);
+      }
+    } catch (err) {
+      console.error("Failed to load admin password:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (activeShift === "admin") {
+      loadAdminPassword();
+    }
+  }, [activeShift]);
+
+  const handleAdminPasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (!adminPassword.trim()) {
+      setErrorMsg("Password cannot be blank.");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/admin/admin-password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: adminPassword.trim() })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSuccessMsg("Administrator login password updated successfully.");
+      } else {
+        setErrorMsg(data.detail || "Failed to update admin password.");
+      }
+    } catch (err) {
+      setErrorMsg("Connection error.");
+    }
+  };
 
   const loadDepartments = () => {
     setLoading(true);
@@ -103,6 +148,12 @@ function AdminDepartmentAccess() {
         >
           Girls Teams (Shift I + II)
         </button>
+        <button 
+          className={`tab-btn ${activeShift === "admin" ? "active" : ""}`}
+          onClick={() => { setActiveShift("admin"); setErrorMsg(""); setSuccessMsg(""); }}
+        >
+          Admin Access
+        </button>
       </div>
 
       {errorMsg && (
@@ -118,65 +169,100 @@ function AdminDepartmentAccess() {
       )}
 
       {/* Grid of Departments */}
-      <div className="event-grid">
-        {filteredDepts.map(dept => {
-          const hasAccess = !!dept.password;
-          return (
-            <div key={dept._id} className="event-card" style={{ padding: "24px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
-                <span className={`event-card-badge ${dept.shift === 1 ? "badge-boys" : dept.shift === 2 ? "badge-girls" : "badge-solo"}`} style={{ backgroundColor: dept.shift === 3 ? "#fae8ff" : undefined, color: dept.shift === 3 ? "#a21caf" : undefined }}>
-                  {dept.shift === 1 ? "Shift I (Boys)" : dept.shift === 2 ? "Shift II (Boys)" : "Girls Competition"}
-                </span>
-                
-                <span style={{ 
-                  fontSize: "11px", 
-                  fontWeight: 700, 
-                  color: hasAccess ? "var(--color-success)" : "var(--color-warning)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px"
-                }}>
-                  {hasAccess ? (
-                    <>
-                      <ShieldCheck size={14} /> Active
-                    </>
-                  ) : (
-                    <>
-                      <ShieldAlert size={14} /> No Access
-                    </>
-                  )}
-                </span>
+      {/* Grid of Departments or Admin credentials form */}
+      {activeShift === "admin" ? (
+        <div style={{ maxWidth: "500px", margin: "24px auto 0 auto" }}>
+          <div className="card" style={{ padding: "32px" }}>
+            <h2 style={{ fontSize: "18px", fontWeight: 700, color: "var(--color-primary)", marginBottom: "20px", borderBottom: "1px solid var(--color-border)", paddingBottom: "10px" }}>
+              Admin Login Configuration
+            </h2>
+            
+            <form onSubmit={handleAdminPasswordSubmit}>
+              <div className="form-group" style={{ marginBottom: "20px" }}>
+                <label className="form-label">Admin Username</label>
+                <input type="text" className="form-input" value="admin" disabled style={{ backgroundColor: "#f1f5f9", cursor: "not-allowed" }} />
               </div>
 
-              <h3 style={{ fontSize: "16px", marginBottom: "4px" }}>{dept.name}</h3>
-              <p style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "monospace", marginBottom: "12px" }}>ID: {dept._id}</p>
-              
-              {hasAccess && (
-                <div style={{ 
-                  backgroundColor: "#f8fafc", 
-                  padding: "8px 12px", 
-                  borderRadius: "var(--radius-sm)", 
-                  fontSize: "12px",
-                  border: "1px solid var(--color-border)",
-                  marginBottom: "20px"
-                }}>
-                  <span style={{ color: "var(--color-text-muted)" }}>Password: </span>
-                  <span style={{ fontWeight: 700, fontFamily: "monospace" }}>{dept.password}</span>
-                </div>
-              )}
+              <div className="form-group" style={{ marginBottom: "24px" }}>
+                <label className="form-label">Change Login Password</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="Enter new admin password"
+                  value={adminPassword}
+                  onChange={e => setAdminPassword(e.target.value)}
+                  required
+                />
+              </div>
 
-              <button 
-                className={hasAccess ? "btn-secondary" : "btn-primary"} 
-                style={{ width: "100%", marginTop: "auto" }}
-                onClick={() => handleAccessClick(dept)}
-              >
-                <Key size={14} />
-                {hasAccess ? "Edit Password" : "Give Access"}
+              <button type="submit" className="btn-primary" style={{ width: "100%", padding: "12px" }}>
+                <ShieldCheck size={16} style={{ display: "inline-block", marginRight: "6px", verticalAlign: "middle" }} />
+                Update Admin Password
               </button>
-            </div>
-          );
-        })}
-      </div>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <div className="event-grid">
+          {filteredDepts.map(dept => {
+            const hasAccess = !!dept.password;
+            return (
+              <div key={dept._id} className="event-card" style={{ padding: "24px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+                  <span className={`event-card-badge ${dept.shift === 1 ? "badge-boys" : dept.shift === 2 ? "badge-girls" : "badge-solo"}`} style={{ backgroundColor: dept.shift === 3 ? "#fae8ff" : undefined, color: dept.shift === 3 ? "#a21caf" : undefined }}>
+                    {dept.shift === 1 ? "Shift I (Boys)" : dept.shift === 2 ? "Shift II (Boys)" : "Girls Competition"}
+                  </span>
+                  
+                  <span style={{ 
+                    fontSize: "11px", 
+                    fontWeight: 700, 
+                    color: hasAccess ? "var(--color-success)" : "var(--color-warning)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}>
+                    {hasAccess ? (
+                      <>
+                        <ShieldCheck size={14} /> Active
+                      </>
+                    ) : (
+                      <>
+                        <ShieldAlert size={14} /> No Access
+                      </>
+                    )}
+                  </span>
+                </div>
+
+                <h3 style={{ fontSize: "16px", marginBottom: "4px" }}>{dept.name}</h3>
+                <p style={{ fontSize: "11px", color: "var(--color-text-muted)", fontFamily: "monospace", marginBottom: "12px" }}>ID: {dept._id}</p>
+                
+                {hasAccess && (
+                  <div style={{ 
+                    backgroundColor: "#f8fafc", 
+                    padding: "8px 12px", 
+                    borderRadius: "var(--radius-sm)", 
+                    fontSize: "12px",
+                    border: "1px solid var(--color-border)",
+                    marginBottom: "20px"
+                  }}>
+                    <span style={{ color: "var(--color-text-muted)" }}>Password: </span>
+                    <span style={{ fontWeight: 700, fontFamily: "monospace" }}>{dept.password}</span>
+                  </div>
+                )}
+
+                <button 
+                  className={hasAccess ? "btn-secondary" : "btn-primary"} 
+                  style={{ width: "100%", marginTop: "auto" }}
+                  onClick={() => handleAccessClick(dept)}
+                >
+                  <Key size={14} />
+                  {hasAccess ? "Edit Password" : "Give Access"}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Give Access Modal */}
       {selectedDept && (
