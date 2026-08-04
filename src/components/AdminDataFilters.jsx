@@ -39,6 +39,9 @@ function AdminDataFilters() {
       const activeYearData = await activeYearRes.json();
       const currentActiveYear = activeYearData.active_year || new Date().getFullYear().toString();
 
+      const registeredYearsRes = await fetch("/api/admin/years");
+      const registeredYearsData = await registeredYearsRes.json();
+
       // Trigger a default filter query to fetch years and initial records for active year
       const initFilterRes = await fetch("/api/reports/filter", {
         method: "POST",
@@ -47,11 +50,8 @@ function AdminDataFilters() {
       });
       const initFilterData = await initFilterRes.json();
 
-      if (deptRes.ok && evRes.ok && initFilterRes.ok) {
-        // Ensure the active year is included in the available years dropdown metadata list
-        const yearsList = initFilterData.available_years.includes(currentActiveYear)
-          ? initFilterData.available_years
-          : [...initFilterData.available_years, currentActiveYear].sort();
+      if (deptRes.ok && evRes.ok && initFilterRes.ok && registeredYearsRes.ok) {
+        const yearsList = registeredYearsData.years || [currentActiveYear];
 
         setFilterMetadata({
           departments: deptData,
