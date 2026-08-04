@@ -263,8 +263,11 @@ class SupabaseCollection:
             filter["id"] = filter.pop("_id")
 
         query = supabase.table(self.table_name).delete()
-        for k, v in filter.items():
-            query = query.eq(k, v)
+        if not filter:
+            query = query.neq("id", "system-dummy-nonexistent-id-val-123")
+        else:
+            for k, v in filter.items():
+                query = query.eq(k, v)
         res = query.execute()
         
         class DeleteResult:
@@ -309,6 +312,7 @@ class SupabaseCollection:
             self.cache.invalidate_all()
         records = self.find(filter)
         pull_data = update.get("$pull", {})
+        set_data = update.get("$set", {})
         
         for rec in records:
             updated = False
@@ -317,6 +321,19 @@ class SupabaseCollection:
                     if val in rec[k]:
                         rec[k] = [x for x in rec[k] if x != val]
                         updated = True
+            
+            for k, val in set_data.items():
+                if "." in k:
+                    parts = k.split(".")
+                    parent_key = parts[0]
+                    child_key = parts[1]
+                    if parent_key not in rec or not isinstance(rec[parent_key], dict):
+                        rec[parent_key] = {}
+                    rec[parent_key][child_key] = val
+                    updated = True
+                else:
+                    rec[k] = val
+                    updated = True
             
             if updated:
                 payload = {}
