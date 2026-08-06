@@ -74,10 +74,10 @@ function RegisterParticipant({ user, onNavigate, setUser }) {
   const loadData = async () => {
     try {
       setLoading(true);
-      const dashRes = await fetch(`/api/department/${user.dept_id}/dashboard`);
+      const dashRes = await fetch(`/api/department/${user.dept_id}/dashboard?_=${Date.now()}`);
       const dashData = await dashRes.json();
       
-      const regsRes = await fetch(`/api/registration/${user.dept_id}`);
+      const regsRes = await fetch(`/api/registration/${user.dept_id}?_=${Date.now()}`);
       const regsData = await regsRes.json();
 
       if (dashRes.ok && regsRes.ok) {

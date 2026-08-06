@@ -36,10 +36,10 @@ function AdminEventsDepartments() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const evRes = await fetch("/api/admin/events");
+      const evRes = await fetch(`/api/admin/events?_=${Date.now()}`);
       const evData = await evRes.json();
       
-      const deptRes = await fetch("/api/admin/departments");
+      const deptRes = await fetch(`/api/admin/departments?_=${Date.now()}`);
       const deptData = await deptRes.json();
 
       if (evRes.ok && deptRes.ok) {
