@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Calendar, AlertCircle, ArrowRight, ShieldAlert } from 'lucide-react';
 
 export default function RegistrationDeadline({ onOpenLogin }) {
-  // Target deadline: August 8, 2026 at 23:59:59
-  const targetDate = new Date('2026-08-15T23:59:59').getTime();
+  // Target deadline: August 10, 2026 at 23:59:59
+  const targetDate = new Date('2026-08-10T23:59:59').getTime();
 
   const [timeLeft, setTimeLeft] = useState({
     days: 5,
