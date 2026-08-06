@@ -97,7 +97,7 @@ function AdminEventsDepartments() {
         defaultRegs = 9999;
       }
       
-      setMaxRegistrations(item.max_members !== undefined ? item.max_members : defaultRegs);
+      setMaxRegistrations(item.type === "solo" ? (item.max_members !== undefined ? item.max_members : defaultRegs) : 1);
     } else {
       setDeptShift(item.shift);
     }
@@ -399,9 +399,15 @@ function AdminEventsDepartments() {
                   <div className="form-group">
                     <label className="form-label">Event Type</label>
                     <select className="form-select" value={eventType} onChange={e => {
-                      setEventType(e.target.value);
-                      if (e.target.value === "solo") setMaxMembers(1);
-                      else if (e.target.value === "team" && maxMembers === 1) setMaxMembers(4);
+                      const val = e.target.value;
+                      setEventType(val);
+                      if (val === "solo") {
+                        setMaxMembers(1);
+                        setMaxRegistrations(3);
+                      } else {
+                        setMaxMembers(val === "team" ? 4 : 2);
+                        setMaxRegistrations(1);
+                      }
                     }}>
                       <option value="solo">Solo</option>
                       <option value="team">Team (Relays)</option>
@@ -450,6 +456,7 @@ function AdminEventsDepartments() {
                       value={maxRegistrations}
                       onChange={e => setMaxRegistrations(Math.max(1, parseInt(e.target.value) || 1))}
                       min={1}
+                      disabled={eventType !== "solo"}
                       required
                     />
                   </div>
