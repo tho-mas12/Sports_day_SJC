@@ -442,11 +442,11 @@ function AdminEventsDepartments() {
 
                   {/* Participant registrations limit box for all events */}
                   <div className="form-group">
-                    <label className="form-label">Max participants per department</label>
+                    <label className="form-label">Participant slots limit per department (Slots Filled)</label>
                     <input 
                       type="number"
                       className="form-input"
-                      placeholder="Enter max participants a department can register"
+                      placeholder="Enter slots limit (e.g. 3, or 9999 for unlimited)"
                       value={maxRegistrations}
                       onChange={e => setMaxRegistrations(Math.max(1, parseInt(e.target.value) || 1))}
                       min={1}
