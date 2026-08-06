@@ -31,6 +31,7 @@ function AdminEventsDepartments() {
   const [otherDetails, setOtherDetails] = useState(""); // details for "others" type
   const [maxMembers, setMaxMembers] = useState(1); // participant count
   const [deptShift, setDeptShift] = useState(1);
+  const [maxRegistrations, setMaxRegistrations] = useState(3);
 
   const loadData = async () => {
     try {
@@ -66,6 +67,7 @@ function AdminEventsDepartments() {
     setEventGender("boys");
     setOtherDetails("");
     setMaxMembers(1);
+    setMaxRegistrations(3);
     setDeptShift(1);
     setErrorMsg("");
     setSuccessMsg("");
@@ -81,6 +83,7 @@ function AdminEventsDepartments() {
       setEventGender(item.gender);
       setOtherDetails(item.other_details || "");
       setMaxMembers(item.max_members || 1);
+      setMaxRegistrations(item.max_registrations !== undefined ? item.max_registrations : (item.max_members || 3));
     } else {
       setDeptShift(item.shift);
     }
@@ -113,6 +116,7 @@ function AdminEventsDepartments() {
           gender: eventGender,
           other_details: eventType === "others" ? otherDetails.trim() : "",
           max_members: eventType === "solo" ? 1 : parseInt(maxMembers) || 4,
+          max_registrations: parseInt(maxRegistrations) || 3,
           is_visible: editingItem ? editingItem.is_visible : true
         }
       : { id: itemId.trim(), name: itemName.trim(), shift: parseInt(deptShift) };
@@ -410,11 +414,11 @@ function AdminEventsDepartments() {
                   {/* Dynamic participant count limit box for team/others */}
                   {eventType !== "solo" && (
                     <div className="form-group">
-                      <label className="form-label">Participant count limit</label>
+                      <label className="form-label">Participant count limit (Roster size)</label>
                       <input 
                         type="number"
                         className="form-input"
-                        placeholder="Enter number of athletes allowed"
+                        placeholder="Enter number of athletes allowed in a team"
                         value={maxMembers}
                         onChange={e => setMaxMembers(Math.max(1, parseInt(e.target.value) || 1))}
                         min={1}
@@ -422,6 +426,20 @@ function AdminEventsDepartments() {
                       />
                     </div>
                   )}
+
+                  {/* Participant registrations limit box for all events */}
+                  <div className="form-group">
+                    <label className="form-label">Max participants per department</label>
+                    <input 
+                      type="number"
+                      className="form-input"
+                      placeholder="Enter max participants a department can register"
+                      value={maxRegistrations}
+                      onChange={e => setMaxRegistrations(Math.max(1, parseInt(e.target.value) || 1))}
+                      min={1}
+                      required
+                    />
+                  </div>
 
                   <div className="form-group">
                     <label className="form-label">Gender Restriction</label>

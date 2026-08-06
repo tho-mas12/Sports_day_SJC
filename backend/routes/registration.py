@@ -130,18 +130,21 @@ def create_registration(req: RegistrationRequest):
                 detail=f"Student '{student_id}' is already registered for this event."
             )
 
-        # Rule 1: Max 3 athletes per department in this event (except 800m, etc.)
-        if not is_excepted_event(event["name"]):
-            existing_count = registrations_col.count_documents({
-                "event_id": req.event_id,
-                "department_id": req.department_id,
-                "year": active_year
-            })
-            if existing_count >= 3:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Limit reached. Only 3 athletes from a department can participate in '{event['name']}'."
-                )
+        # Rule 1: Max athletes per department in this event (configurable limit)
+        limit = event.get("max_registrations")
+        if limit is None:
+            limit = 9999 if is_excepted_event(event["name"]) else 3
+            
+        existing_count = registrations_col.count_documents({
+            "event_id": req.event_id,
+            "department_id": req.department_id,
+            "year": active_year
+        })
+        if existing_count >= limit:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Limit reached. Only {limit} athletes from a department can participate in '{event['name']}'."
+            )
 
         # Rule 2: Max 4 events per athlete
         athlete_events = check_athlete_event_count(student_id)

@@ -13,6 +13,7 @@ class EventModel(BaseModel):
     gender: str  # "boys" or "girls"
     other_details: Optional[str] = ""
     max_members: Optional[int] = 1
+    max_registrations: Optional[int] = 3
     is_visible: Optional[bool] = True
 
 class EventEditModel(BaseModel):
@@ -21,6 +22,7 @@ class EventEditModel(BaseModel):
     gender: str
     other_details: Optional[str] = ""
     max_members: Optional[int] = 1
+    max_registrations: Optional[int] = 3
     is_visible: Optional[bool] = True
 
 class DepartmentModel(BaseModel):
@@ -53,9 +55,11 @@ def list_events():
     return list(events_col.find())
 
 @router.post("/events")
-def add_event(ev: EventModel):
-    if events_col.find_one({"_id": ev.id}):
-        raise HTTPException(status_code=400, detail="Event ID already exists.")
+def create_event(ev: EventModel):
+    # Check if event already exists
+    existing = events_col.find_one({"_id": ev.id})
+    if existing:
+        raise HTTPException(status_code=400, detail="Event with this ID already exists.")
     
     events_col.insert_one({
         "_id": ev.id,
@@ -64,6 +68,7 @@ def add_event(ev: EventModel):
         "gender": ev.gender,
         "other_details": ev.other_details or "",
         "max_members": ev.max_members if ev.type in ["team", "others"] else 1,
+        "max_registrations": ev.max_registrations if ev.max_registrations is not None else 3,
         "is_visible": ev.is_visible if ev.is_visible is not None else True
     })
     return {"success": True, "message": "Event added successfully."}
@@ -79,6 +84,7 @@ def edit_event(event_id: str, ev: EventEditModel):
                 "gender": ev.gender,
                 "other_details": ev.other_details or "",
                 "max_members": ev.max_members if ev.type in ["team", "others"] else 1,
+                "max_registrations": ev.max_registrations if ev.max_registrations is not None else 3,
                 "is_visible": ev.is_visible if ev.is_visible is not None else True
             }
         }
