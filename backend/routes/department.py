@@ -140,8 +140,8 @@ def get_dashboard_data(dept_id: str):
         ev_id = ev["_id"]
         count = reg_counts.get(ev_id, 0)
         
-        limit = ev.get("max_registrations")
-        if limit is None:
+        limit = ev.get("max_members")
+        if limit is None or (ev["type"] != "team" and limit <= 1):
             if ev["type"] == "team":
                 limit = 1
             else:

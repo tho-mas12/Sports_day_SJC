@@ -111,8 +111,8 @@ def create_registration(req: RegistrationRequest):
     max_members = event.get("max_members", 1)
 
     # 2. Check Event Type constraints
-    # If the event has max_members == 1, treat as solo
-    if req.type == "solo" or max_members <= 1:
+    # If the event type is solo, treat as solo
+    if req.type == "solo" or event.get("type") == "solo":
         if not req.student_id or not req.student_name or not req.gender:
             raise HTTPException(status_code=400, detail="Student ID, Name, and Gender are required.")
         
@@ -130,9 +130,9 @@ def create_registration(req: RegistrationRequest):
                 detail=f"Student '{student_id}' is already registered for this event."
             )
 
-        # Rule 1: Max athletes per department in this event (configurable limit)
-        limit = event.get("max_registrations")
-        if limit is None:
+        # Rule 1: Max athletes per department in this event (configurable limit via max_members field)
+        limit = event.get("max_members")
+        if limit is None or limit <= 1:
             limit = 9999 if is_excepted_event(event["name"]) else 3
             
         existing_count = registrations_col.count_documents({
@@ -241,9 +241,8 @@ def edit_registration(reg_id: str, req: RegistrationRequest):
         raise HTTPException(status_code=400, detail="Registration deadline has passed. Cannot edit.")
 
     event = events_col.find_one({"_id": reg["event_id"]})
-    max_members = event.get("max_members", 1)
 
-    if reg["type"] == "solo" or max_members <= 1:
+    if reg["type"] == "solo" or (event and event.get("type") == "solo"):
         if not req.student_id or not req.student_name or not req.gender:
             raise HTTPException(status_code=400, detail="Student ID, Name, and Gender are required.")
 

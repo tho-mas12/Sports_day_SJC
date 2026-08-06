@@ -13,7 +13,6 @@ class EventModel(BaseModel):
     gender: str  # "boys" or "girls"
     other_details: Optional[str] = ""
     max_members: Optional[int] = 1
-    max_registrations: Optional[int] = 3
     is_visible: Optional[bool] = True
 
 class EventEditModel(BaseModel):
@@ -22,7 +21,6 @@ class EventEditModel(BaseModel):
     gender: str
     other_details: Optional[str] = ""
     max_members: Optional[int] = 1
-    max_registrations: Optional[int] = 3
     is_visible: Optional[bool] = True
 
 class DepartmentModel(BaseModel):
@@ -67,8 +65,7 @@ def create_event(ev: EventModel):
         "type": ev.type,
         "gender": ev.gender,
         "other_details": ev.other_details or "",
-        "max_members": ev.max_members if ev.type in ["team", "others"] else 1,
-        "max_registrations": ev.max_registrations if ev.max_registrations is not None else 3,
+        "max_members": ev.max_members if ev.max_members is not None else 1,
         "is_visible": ev.is_visible if ev.is_visible is not None else True
     })
     return {"success": True, "message": "Event added successfully."}
@@ -83,8 +80,7 @@ def edit_event(event_id: str, ev: EventEditModel):
                 "type": ev.type, 
                 "gender": ev.gender,
                 "other_details": ev.other_details or "",
-                "max_members": ev.max_members if ev.type in ["team", "others"] else 1,
-                "max_registrations": ev.max_registrations if ev.max_registrations is not None else 3,
+                "max_members": ev.max_members if ev.max_members is not None else 1,
                 "is_visible": ev.is_visible if ev.is_visible is not None else True
             }
         }

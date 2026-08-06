@@ -97,7 +97,7 @@ function AdminEventsDepartments() {
         defaultRegs = 9999;
       }
       
-      setMaxRegistrations(item.max_registrations !== undefined ? item.max_registrations : defaultRegs);
+      setMaxRegistrations(item.max_members !== undefined ? item.max_members : defaultRegs);
     } else {
       setDeptShift(item.shift);
     }
@@ -129,8 +129,7 @@ function AdminEventsDepartments() {
           type: eventType, 
           gender: eventGender,
           other_details: eventType === "others" ? otherDetails.trim() : "",
-          max_members: eventType === "solo" ? 1 : parseInt(maxMembers) || 4,
-          max_registrations: parseInt(maxRegistrations) || 3,
+          max_members: eventType === "solo" ? parseInt(maxRegistrations) : parseInt(maxMembers) || 4,
           is_visible: editingItem ? editingItem.is_visible : true
         }
       : { id: itemId.trim(), name: itemName.trim(), shift: parseInt(deptShift) };
