@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Calendar, AlertCircle, ArrowRight, ShieldAlert } from 'lucide-react';
 
 export default function RegistrationDeadline({ onOpenLogin }) {
-  // Target deadline: August 10, 2026 at 23:59:59
-  const targetDate = new Date('2026-08-10T23:59:59').getTime();
+  // Target deadline: August 13, 2026 at 23:59:59
+  const targetDate = new Date('2026-08-13T23:59:59').getTime();
 
   const [timeLeft, setTimeLeft] = useState({
     days: 5,
@@ -57,12 +57,12 @@ export default function RegistrationDeadline({ onOpenLogin }) {
                 Registration Deadline
               </h3>
               <p className="text-slate-600 text-sm sm:text-base font-normal">
-                Department Secretary and In-Charge Students must submit final participant lists by <span className="font-semibold text-slate-800">10 August 2026</span>. Late entries will not be accepted.
+                Department Secretary and In-Charge Students must submit final participant lists by <span className="font-semibold text-slate-800">10 August 2026 ( Extended to 13 August 2026 )</span>. Late entries will not be accepted.
               </p>
               
               <div className="flex items-center justify-center lg:justify-start gap-2 text-xs text-slate-500 pt-1">
                 <Calendar className="w-4 h-4 text-[#2563EB]" />
-                <span>Official Date: <strong>Monday, 10 August 2026 (11:59 PM IST)</strong></span>
+                <span>Official Date: <strong>Monday, 10 August 2026 ( Extended to 13 August 2026 ) (11:59 PM IST)</strong></span>
               </div>
             </div>
 

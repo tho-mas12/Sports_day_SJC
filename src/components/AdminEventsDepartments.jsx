@@ -74,6 +74,12 @@ function AdminEventsDepartments() {
     setShowAddModal(true);
   };
 
+  const isExceptedEventName = (name) => {
+    const clean = name.toLowerCase().replace(/mts/g, "mts.").replace(/\s+/g, " ").trim();
+    const exceptions = ["800 mts. race", "1500 mts. race", "5000 mts. race", "10,000 mts. race", "20 km walk", "800 mts race", "1500 mts race", "5000 mts race", "10000 mts race", "20km walk"];
+    return exceptions.some(ex => clean.includes(ex));
+  };
+
   const openEditModal = (item) => {
     setEditingItem(item);
     setItemId(item._id);
@@ -83,7 +89,15 @@ function AdminEventsDepartments() {
       setEventGender(item.gender);
       setOtherDetails(item.other_details || "");
       setMaxMembers(item.max_members || 1);
-      setMaxRegistrations(item.max_registrations !== undefined ? item.max_registrations : (item.max_members || 3));
+      
+      let defaultRegs = 3;
+      if (item.type === "team") {
+        defaultRegs = 1;
+      } else if (isExceptedEventName(item.name)) {
+        defaultRegs = 9999;
+      }
+      
+      setMaxRegistrations(item.max_registrations !== undefined ? item.max_registrations : defaultRegs);
     } else {
       setDeptShift(item.shift);
     }
