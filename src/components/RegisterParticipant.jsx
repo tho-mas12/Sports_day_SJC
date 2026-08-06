@@ -378,9 +378,18 @@ function RegisterParticipant({ user, onNavigate, setUser }) {
                     </div>
                   </div>
                   
-                  <h3 className="event-card-title" style={{ fontSize: "16px", color: "var(--color-primary)", fontWeight: 800, marginBottom: "20px" }}>
+                  <h3 className="event-card-title" style={{ fontSize: "16px", color: "var(--color-primary)", fontWeight: 800, marginBottom: "8px" }}>
                     {ev.name}
                   </h3>
+                  
+                  {/* Slot availability indicator */}
+                  <div style={{ fontSize: "12px", color: "var(--color-text-muted)", marginBottom: "20px", fontWeight: 500 }}>
+                    {ev.limit === 9999 ? (
+                      <span>Registered: <strong style={{ color: "var(--color-primary)" }}>{ev.reg_count}</strong> (Unlimited)</span>
+                    ) : (
+                      <span>Slots Filled: <strong style={{ color: ev.reg_count >= ev.limit ? "var(--color-danger)" : "var(--color-primary)" }}>{ev.reg_count}</strong> of <strong>{ev.limit}</strong></span>
+                    )}
+                  </div>
                   
                   <button 
                     className="btn-primary" 
@@ -393,7 +402,7 @@ function RegisterParticipant({ user, onNavigate, setUser }) {
                     onClick={() => !isPassed && handleRegisterClick(ev)}
                     disabled={ev.registered || isPassed}
                   >
-                    {ev.registered ? "Registered" : isPassed ? "Deadline Passed" : "Register"}
+                    {ev.registered ? "Registered (Full)" : isPassed ? "Deadline Passed" : "Register"}
                   </button>
                 </div>
               );

@@ -127,11 +127,28 @@ def get_dashboard_data(dept_id: str):
 
     total_participation = len(unique_students)
 
+    # Count of registrations per event
+    reg_counts = {}
+    for r in regs:
+        ev_id = r["event_id"]
+        reg_counts[ev_id] = reg_counts.get(ev_id, 0) + 1
+
     # Categorize events
     solo_events = []
     team_events = []
     for ev in allowed_events:
-        is_reg = ev["_id"] in registered_event_ids
+        ev_id = ev["_id"]
+        count = reg_counts.get(ev_id, 0)
+        
+        limit = ev.get("max_registrations")
+        if limit is None:
+            if ev["type"] == "team":
+                limit = 1
+            else:
+                from routes.registration import is_excepted_event
+                limit = 9999 if is_excepted_event(ev["name"]) else 3
+                
+        is_reg = count >= limit
         
         # If type is "others" and max_members is 1, treat as solo; if > 1, treat as team
         ev_type_group = ev["type"]
@@ -145,6 +162,8 @@ def get_dashboard_data(dept_id: str):
             "max_members": ev.get("max_members", 1),
             "gender": ev["gender"],
             "registered": is_reg,
+            "reg_count": count,
+            "limit": limit,
             "other_details": ev.get("other_details", "")
         }
         
