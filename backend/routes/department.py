@@ -141,12 +141,11 @@ def get_dashboard_data(dept_id: str):
         count = reg_counts.get(ev_id, 0)
         
         limit = ev.get("max_members")
-        if limit is None or (ev["type"] != "team" and limit <= 1):
-            if ev["type"] == "team":
-                limit = 1
-            else:
-                from routes.registration import is_excepted_event
-                limit = 9999 if is_excepted_event(ev["name"]) else 3
+        if ev["type"] == "team":
+            limit = 1
+        elif limit is None or limit <= 1:
+            from routes.registration import is_excepted_event
+            limit = 9999 if is_excepted_event(ev["name"]) else 3
                 
         is_reg = count >= limit
         
